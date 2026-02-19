@@ -1,0 +1,13 @@
+# 프로젝트용 Codex 설정 템플릿
+# 사용: 이 파일을 .codex/config.toml 로 복사한 뒤 편집하세요.
+# 상대 경로는 이 config.toml이 있는 .codex/ 디렉터리 기준으로 해석됩니다.
+# 프로젝트 config는 Codex에서 이 프로젝트를 신뢰(trust)한 경우에만 적용됩니다.
+
+# AGENTS.md 합산이 기본 32 KiB를 넘을 때 상향 권장 (기본값 32768)
+project_doc_max_bytes = 65536
+
+# 선택: 명령 실행 전 승인 정책 (예: on-request, on-failure, never)
+# approval_policy = "on-request"
+
+# 선택: 샌드박스 수준 (예: workspace-write, danger-full-access)
+# sandbox_mode = "workspace-write"

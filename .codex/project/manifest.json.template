@@ -1,0 +1,87 @@
+{
+  "version": "1.0.0",
+  "kernelVersion": "1.0.0",
+  "created": "",
+  "lastEvolved": "",
+  "moltCount": 0,
+  "defaults": {
+    "completionLevel": 2,
+    "maxRalphIterations": 10,
+    "enableSecurityReview": false,
+    "enableQA": true
+  },
+  "project": {
+    "name": "",
+    "type": "",
+    "languages": [],
+    "platforms": []
+  },
+  "stack": {
+    "packageManager": "",
+    "buildTool": "",
+    "frameworks": [],
+    "libraries": [],
+    "architecture": "",
+    "testFramework": "",
+    "cicd": ""
+  },
+  "activated": {
+    "skills": [
+      {"path": "skills/code-accuracy", "source": "origin"},
+      {"path": "skills/verify-loop", "source": "origin"},
+      {"path": "skills/planning", "source": "origin"},
+      {"path": "skills/git-commit", "source": "origin"},
+      {"path": "skills/autonomous-loop", "source": "origin"},
+      {"path": "skills/deep-search", "source": "origin"},
+      {"path": "skills/deep-index", "source": "origin"},
+      {"path": "skills/code-review", "source": "origin"},
+      {"path": "skills/build-fix", "source": "origin"},
+      {"path": "skills/security-review", "source": "origin"},
+      {"path": "skills/tdd", "source": "origin"},
+      {"path": "skills/documentation", "source": "origin"},
+      {"path": "skills/research", "source": "origin"},
+      {"path": "skills/note", "source": "origin"},
+      {"path": "skills/setup", "source": "origin"},
+      {"path": "skills/help", "source": "origin"},
+      {"path": "skills/clean-functions", "source": "origin"},
+      {"path": "skills/comment-checker", "source": "origin"},
+      {"path": "skills/refactoring", "source": "origin"},
+      {"path": "skills/merge-request", "source": "origin"},
+      {"path": "skills/branch-convention", "source": "origin"},
+      {"path": "skills/ast-refactor", "source": "origin"},
+      {"path": "skills/design-principles", "source": "origin"},
+      {"path": "skills/mermaid", "source": "origin"},
+      {"path": "skills/lsp", "source": "origin"},
+      {"path": "skills/prd", "source": "origin"},
+      {"path": "skills/ralplan", "source": "origin"},
+      {"path": "skills/ecomode", "source": "origin"},
+      {"path": "skills/cancel", "source": "origin"},
+      {"path": "skills/reverse-engineering", "source": "origin"},
+      {"path": "skills/learner", "source": "origin"},
+      {"path": "skills/evolve", "source": "origin"},
+      {"path": "skills/doctor", "source": "origin"},
+      {"path": "skills/solid", "source": "origin"},
+      {"path": "skills/notify-user", "source": "origin"}
+    ],
+    "roles": [
+      {"name": "analyst", "source": "origin", "ref": "AGENTS.md#analyst-metis--phase-0"},
+      {"name": "planner", "source": "origin", "ref": "AGENTS.md#planner-prometheus--phase-1"},
+      {"name": "critic", "source": "origin", "ref": "AGENTS.md#critic-momus--phase-1"},
+      {"name": "implementer", "source": "origin", "ref": "AGENTS.md#implementer-executor--phase-2"},
+      {"name": "reviewer", "source": "origin", "ref": "AGENTS.md#reviewer--phase-3"},
+      {"name": "debugger", "source": "origin", "ref": "AGENTS.md#debugger--phase-2"},
+      {"name": "researcher", "source": "origin", "ref": "AGENTS.md#researcher--phase-0"},
+      {"name": "vision", "source": "origin", "ref": "AGENTS.md#vision--phase-0"},
+      {"name": "architect", "source": "origin", "ref": "AGENTS.md#architect--phase-1"},
+      {"name": "designer", "source": "origin", "ref": "AGENTS.md#designer--phase-1"},
+      {"name": "migrator", "source": "origin", "ref": "AGENTS.md#migrator--phase-2"},
+      {"name": "tdd-guide", "source": "origin", "ref": "AGENTS.md#tdd-guide--phase-2"},
+      {"name": "qa-tester", "source": "origin", "ref": "AGENTS.md#qa-tester--phase-3"},
+      {"name": "security-reviewer", "source": "origin", "ref": "AGENTS.md#security-reviewer--phase-3"},
+      {"name": "doc-writer", "source": "origin", "ref": "AGENTS.md#doc-writer--phase-3"}
+    ]
+  },
+  "evolution": {
+    "history": []
+  }
+}
