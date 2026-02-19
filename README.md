@@ -25,14 +25,20 @@ Quick Start 문서: [`Documents/QUICK-START.md`](./Documents/QUICK-START.md)
 
 ## 4. 초기화 전/후 상태 설명
 
-초기화 전(현재 기본 상태):
-- `README.md`: 이 문서에서 생성됨
+초기 상태 예시(setup 전):
 - `.codex/project/manifest.json`: 없음
 - `.codex/project/context.md`: 없음
 
 초기화 후(목표 상태):
 - `setup` 스킬 실행을 통해 `.codex/project/manifest.json` 생성
 - `setup` 스킬 실행을 통해 `.codex/project/context.md` 생성
+
+현재 상태 확인 명령:
+
+```bash
+test -f .codex/project/manifest.json && echo "manifest.json: OK" || echo "manifest.json: MISSING"
+test -f .codex/project/context.md && echo "context.md: OK" || echo "context.md: MISSING"
+```
 
 Bootstrap 관점에서 `AGENTS.md`는 세션 시작 시 `manifest.json` 존재 여부를 확인하며, 없으면 setup 실행을 안내하도록 정의되어 있습니다.
 
@@ -47,13 +53,18 @@ Bootstrap 관점에서 `AGENTS.md`는 세션 시작 시 `manifest.json` 존재 �
 | "보안 포함", "보안 검토", "security review" | Security Mode |
 | "테스트까지", "test included", "tdd", "test first" | QA/TDD Mode |
 | "문서화까지", "with docs" | Doc Mode |
-| "최대 성능", "병렬로", "autopilot" | Autopilot |
+| "최대 성능", "병렬로", "autopilot", "ulw" | Autopilot |
 | "절약", "eco", "budget", "효율적으로" | Ecomode |
 | "요구사항 정리", "PRD" | PRD Mode |
 | "인덱싱", "코드베이스 파악" | Index Mode |
 | "조사", "research", "리서치" | Research Mode |
 | "기획 합의", "ralplan" | Ralplan Mode |
 | "빌드 수정", "build fix" | Build Fix |
+| "아키텍처", "구조 분석", "모듈 경계" | Architecture |
+| "UI 분석", "디자인 리뷰", "접근성" | Design |
+| "마이그레이션", "업그레이드", "migrate" | Migration |
+| "스크린샷 분석", "목업", "visual" | Vision |
+| "QA", "테스트 검증", "커버리지" | QA Mode |
 | "취소", "cancel", "중단" | Cancel |
 | "도움말", "help", "사용법" | Help |
 
