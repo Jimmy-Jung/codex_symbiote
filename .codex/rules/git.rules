@@ -1,0 +1,94 @@
+# Git Workflow Rules
+# Converted from: .cursor/hooks/guard-shell.sh
+#
+# Purpose: Protect Git workflow from destructive operations and unsupported interactive commands.
+# Decision strategy:
+#   - prompt: Allow with user approval (force push, hard reset)
+#   - forbidden: Block completely (clean, interactive rebase/add)
+
+# Git force push - requires approval
+prefix_rule(
+    pattern = ["git", "push", ["--force", "-f"]],
+    decision = "prompt",
+    justification = "force push는 원격 히스토리를 파괴합니다. --force-with-lease 사용을 권장합니다.",
+    match = [
+        "git push --force",
+        "git push -f",
+    ],
+    not_match = [
+        "git push",
+        "git push origin main",
+        "git push --force-with-lease",
+    ],
+)
+
+# Git hard reset - requires approval
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "prompt",
+    justification = "hard reset은 커밋되지 않은 변경사항을 영구 삭제합니다. 신중하게 진행하세요.",
+    match = [
+        "git reset --hard",
+        "git reset --hard HEAD",
+        "git reset --hard origin/main",
+        "git reset --hard HEAD~1",
+    ],
+    not_match = [
+        "git reset",
+        "git reset --soft HEAD~1",
+        "git reset --mixed HEAD~1",
+        "git reset HEAD file.txt",
+    ],
+)
+
+# Git clean - forbidden (data loss)
+prefix_rule(
+    pattern = ["git", "clean", "-fd"],
+    decision = "forbidden",
+    justification = "git clean -fd는 추적되지 않는 파일을 영구 삭제합니다. 대안으로 'git stash --include-untracked'를 사용하세요.",
+    match = [
+        "git clean -fd",
+        "git clean -fd .",
+        "git clean -fd src/",
+    ],
+    not_match = [
+        "git clean -n",
+        "git clean --dry-run",
+    ],
+)
+
+# Git interactive rebase - forbidden (terminal not supported)
+prefix_rule(
+    pattern = ["git", "rebase", ["-i", "--interactive"]],
+    decision = "forbidden",
+    justification = "인터랙티브 rebase는 Codex CLI 터미널에서 지원되지 않습니다. 로컬 터미널에서 수동으로 실행하세요.",
+    match = [
+        "git rebase -i",
+        "git rebase --interactive",
+        "git rebase -i HEAD~3",
+        "git rebase --interactive origin/main",
+    ],
+    not_match = [
+        "git rebase",
+        "git rebase main",
+        "git rebase origin/main",
+    ],
+)
+
+# Git interactive add - forbidden (terminal not supported)
+prefix_rule(
+    pattern = ["git", "add", ["-i", "--interactive"]],
+    decision = "forbidden",
+    justification = "인터랙티브 add는 Codex CLI 터미널에서 지원되지 않습니다. 'git add -p' 또는 파일별 add를 사용하세요.",
+    match = [
+        "git add -i",
+        "git add --interactive",
+    ],
+    not_match = [
+        "git add .",
+        "git add -A",
+        "git add -p",
+        "git add --patch",
+        "git add file.txt",
+    ],
+)

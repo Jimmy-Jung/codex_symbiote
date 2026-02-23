@@ -29,7 +29,7 @@
 | PR | PR 생성 |
 | Pipeline | 역할 순차 체이닝 |
 | Clean | state 폴더 정리 |
-| Stats | 스킬/워크플로우 사용 통계 |
+| Stats | Task-folder 기반 스킬 사용 현황 분석 |
 | SOLID 분석 | 설계 품질 분석 |
 
 ## 역할-워크플로우 연결

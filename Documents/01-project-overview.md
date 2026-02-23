@@ -9,14 +9,14 @@
 
 - 사용자 자연어 요청을 `AGENTS.md` 규칙으로 해석
 - 모드 감지 후 적절한 역할(Analyst/Planner/Implementer 등)로 전환
-- `.codex/skills/*/SKILL.md` 스킬 워크플로우를 적용
+- `.agents/skills/*/SKILL.md` 스킬 워크플로우를 적용
 - setup/evolve/doctor 등의 운영 사이클 제공
 
 ## 저장소 범위
 
 포함:
 - 오케스트레이터 규칙: `AGENTS.md`
-- 스킬 정의: `.codex/skills/*/SKILL.md`
+- 스킬 정의: `.agents/skills/*/SKILL.md`
 - 프로젝트 메타/템플릿: `.codex/project/*`
 - 참조 문서: `.codex/docs/codex-reference.md`
 
@@ -30,7 +30,6 @@
 - `.codex/project/manifest.json.template`
 - `.codex/project/VERSION`
 - `.codex/project/state/.gitkeep`
-- `.codex/project/usage-data/.gitkeep`
 
 setup 실행 후 생성 목표:
 - `.codex/project/manifest.json`
@@ -47,5 +46,5 @@ setup 실행 후 생성 목표:
 ## 현재 확인된 사실 (2026-02-19)
 
 - `Documents/`에는 기존 `QUICK-START.md`가 있었고, 본 문서 세트가 추가됨
-- `.codex/skills/doctor/scripts/validate.sh`가 구조 진단 스크립트로 동작
+- `.agents/skills/doctor/scripts/validate.sh`가 구조 진단 스크립트로 동작
 - `.codex/project/manifest.json`과 `.codex/project/context.md`는 아직 생성 전 상태

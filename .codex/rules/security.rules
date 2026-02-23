@@ -1,0 +1,53 @@
+# Security Rules
+# Converted from: .cursor/hooks/guard-shell.sh
+#
+# Purpose: Block security-sensitive operations (sudo filesystem changes, remote script execution).
+# All rules use decision="forbidden" to completely block dangerous commands.
+#
+# Note: curl/wget piping patterns (e.g., "curl ... | bash") are automatically detected
+# by Codex CLI's shell wrapper parsing and do not require explicit rules.
+
+# Sudo file deletion - absolutely forbidden
+prefix_rule(
+    pattern = ["sudo", "rm"],
+    decision = "forbidden",
+    justification = "sudo를 사용한 파일 삭제는 차단됩니다. 권한을 확인하거나 수동으로 실행하세요.",
+    match = [
+        "sudo rm -rf /tmp/test",
+        "sudo rm file.txt",
+        "sudo rm -rf /var/log/old",
+    ],
+    not_match = [
+        "rm -rf /tmp/test",
+        "git rm file.txt",
+    ],
+)
+
+# Sudo permission change - absolutely forbidden
+prefix_rule(
+    pattern = ["sudo", "chmod"],
+    decision = "forbidden",
+    justification = "sudo를 사용한 권한 변경은 차단됩니다. 수동으로 실행하세요.",
+    match = [
+        "sudo chmod 755 /usr/local/bin/app",
+        "sudo chmod -R 644 /var/www",
+    ],
+    not_match = [
+        "chmod 755 script.sh",
+        "chmod -R 644 .",
+    ],
+)
+
+# Sudo ownership change - absolutely forbidden
+prefix_rule(
+    pattern = ["sudo", "chown"],
+    decision = "forbidden",
+    justification = "sudo를 사용한 소유자 변경은 차단됩니다. 수동으로 실행하세요.",
+    match = [
+        "sudo chown root:root /etc/config",
+        "sudo chown -R user:group /var/www",
+    ],
+    not_match = [
+        "chown user file.txt",
+    ],
+)

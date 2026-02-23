@@ -31,7 +31,7 @@
 3. 10분: 무결성 검사
 
 ```bash
-bash .codex/skills/doctor/scripts/validate.sh
+bash .agents/skills/doctor/scripts/validate.sh
 ```
 
 4. 15분: 실행 구조 이해
@@ -63,6 +63,6 @@ bash .codex/skills/doctor/scripts/validate.sh
 
 ## 참고 링크
 
-- setup: `.codex/skills/setup/SKILL.md`
-- doctor: `.codex/skills/doctor/SKILL.md`
+- setup: `.agents/skills/setup/SKILL.md`
+- doctor: `.agents/skills/doctor/SKILL.md`
 - 전체 규칙: `AGENTS.md`

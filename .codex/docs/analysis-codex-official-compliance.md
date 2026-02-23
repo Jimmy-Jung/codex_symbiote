@@ -12,7 +12,7 @@
 
 - 프로젝트를 "신뢰(trust)"한 상태에서 실행하는지, 아니면 기본이 untrusted인지 명시되어 있지 않음. 신뢰하지 않으면 `.codex/config.toml`이 로드되지 않음.
 - `manifest.json`·`context.md`는 공식 스펙이 아님. Codex CLI가 이 파일들을 자동으로 읽는지, 아니면 전적으로 AGENTS.md/스킬 지시에 의존하는지 공식 문서만으로는 불명확.
-- `.codex/skills/` 디렉터리는 공식 "Config basics"·"Advanced Configuration"에 디렉터리 구조로 등장하지 않음. Team Config(enterprise)에서 "skills" 언급만 있음. 즉, 프로젝트 내 `.codex/skills/`는 커스텀 컨벤션으로, Codex가 네이티브로 인식하는지 여부는 문서상 확인 필요.
+- `.agents/skills/` 디렉터리는 공식 "Config basics"·"Advanced Configuration"에 디렉터리 구조로 등장하지 않음. Team Config(enterprise)에서 "skills" 언급만 있음. 즉, 프로젝트 내 `.agents/skills/`는 커스텀 컨벤션으로, Codex가 네이티브로 인식하는지 여부는 문서상 확인 필요.
 
 ---
 
@@ -29,7 +29,7 @@
 ## 3. 미검증 가정 (Unvalidated Assumptions)
 
 - "Codex가 프로젝트 루트와 `.codex/` 하위의 AGENTS.md만 읽고, `manifest.json`/`context.md`는 읽지 않는다"는 가정: 실제 동작은 에이전트가 Read 도구로 이 파일들을 열어야 하므로, "자동 로드"가 아니라 AGENTS.md·스킬 내 지시에 의한 명시적 로드임.
-- "프로젝트를 신뢰하지 않아도 `.codex/skills/`와 AGENTS.md는 적용된다"는 가정: 공식 문서는 "project-scoped `.codex/` layers"를 untrusted 시 스킵한다고만 기술. config.toml만 예시로 들었으나, 전체 `.codex/` 처리 방식은 문서만으로는 불명확.
+- "프로젝트를 신뢰하지 않아도 `.agents/skills/`와 AGENTS.md는 적용된다"는 가정: 공식 문서는 "project-scoped `.codex/` layers"를 untrusted 시 스킵한다고만 기술. config.toml만 예시로 들었으나, 전체 `.codex/` 처리 방식은 문서만으로는 불명확.
 - Bootstrap Check에서 "manifest.json 없으면 setup 안내"는 AGENTS.md에 적힌 규칙이므로, Codex가 AGENTS.md를 끝까지 로드해야만 동작함. project_doc_max_bytes로 잘리면 Bootstrap 단계 지시가 누락될 수 있음.
 
 ---
@@ -54,7 +54,7 @@
    - 또는 `~/.codex/config.toml`에서 `project_doc_max_bytes = 65536`으로 상향해 두는 것을 codex-reference.md §6에 권장 사항으로 추가.
 
 3. **공식 vs 커스텀 구분 문서화**  
-   - codex-reference.md 또는 README에 "공식 Codex가 정의한 항목(config.toml, AGENTS.md discovery)과 Symbiote 전용 항목(manifest.json, context.md, .codex/skills/ 구조)"를 표로 정리해 두면, 업스트림 변경 시 영향 범위 파악이 쉬움.
+   - codex-reference.md 또는 README에 "공식 Codex가 정의한 항목(config.toml, AGENTS.md discovery)과 Symbiote 전용 항목(manifest.json, context.md, .agents/skills/ 구조)"를 표로 정리해 두면, 업스트림 변경 시 영향 범위 파악이 쉬움.
 
 4. **Trust 안내**  
    - Bootstrap 또는 QUICK-START에 "이 프로젝트를 Codex에서 신뢰하도록 설정해야 프로젝트용 .codex/config.toml이 적용된다"는 문구를 한 줄 추가하면, 설정이 적용되지 않는 경우를 줄일 수 있음.

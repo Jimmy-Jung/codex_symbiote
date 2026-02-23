@@ -1,7 +1,7 @@
 # codex_symbiote 문서
 
 > 생성/갱신일: 2026-02-19
-> 검증 기준: `AGENTS.md`, `.codex/AGENTS.md`, `.codex/project/manifest.json.template`, `.codex/skills/*`
+> 검증 기준: `AGENTS.md`, `.codex/AGENTS.md`, `.codex/project/manifest.json.template`, `.agents/skills/*`
 
 ## 문서 목적
 
@@ -37,13 +37,13 @@
 
 - 저장소 성격: Codex CLI 오케스트레이션 템플릿
 - 핵심 진입점: `AGENTS.md`
-- 스킬 수: 35개 (`.codex/skills/*` 디렉터리 기준)
+- 스킬 수: 35개 (`.agents/skills/*` 디렉터리 기준)
 - 역할 수: 15개 (`AGENTS.md` Agent Roles 섹션 기준)
 - 워크플로우 수: 10개 (`AGENTS.md` Workflows 섹션 기준)
 - setup 산출물(`manifest.json`, `context.md`): 아직 미생성
 
 ## 문서 갱신 규칙
 
-- 문서 수정 전 `AGENTS.md`와 `.codex/skills/*/SKILL.md`를 먼저 확인합니다.
+- 문서 수정 전 `AGENTS.md`와 `.agents/skills/*/SKILL.md`를 먼저 확인합니다.
 - 수치(개수, 경로)는 명령으로 재검증 후 반영합니다.
 - setup 전/후 상태 차이를 문서에 명시합니다.

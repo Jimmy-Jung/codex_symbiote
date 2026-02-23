@@ -11,7 +11,7 @@
 
 - Codex CLI 실행 가능
 - 저장소 루트 접근 가능
-- 기준 문서: `AGENTS.md`, `.codex/skills/setup/SKILL.md`
+- 기준 문서: `AGENTS.md`, `.agents/skills/setup/SKILL.md`
 - 프로젝트용 `.codex/config.toml` 적용 시 Codex trust 필요
 
 ## 3. 실행 절차
@@ -44,7 +44,7 @@ test -f .codex/project/context.md && echo "context.md: OK" || echo "context.md: 
 5. 구조 진단(권장)
 
 ```bash
-bash .codex/skills/doctor/scripts/validate.sh
+bash .agents/skills/doctor/scripts/validate.sh
 ```
 
 ## 4. 성공 기준

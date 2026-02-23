@@ -1,7 +1,7 @@
 # Synapse — Universal Agent Orchestrator for Codex CLI
 
 이 문서는 실제 파일 기준으로 작성되었습니다.  
-근거 파일: `AGENTS.md`, `.codex/AGENTS.md`, `.codex/docs/codex-reference.md`, `.codex/skills/setup/SKILL.md`, `.codex/project/manifest.json.template`, `.codex/project/VERSION`
+근거 파일: `AGENTS.md`, `.codex/AGENTS.md`, `.codex/docs/codex-reference.md`, `.agents/skills/setup/SKILL.md`, `.codex/project/manifest.json.template`, `.codex/project/VERSION`
 
 ## 1. 프로젝트 개요
 
@@ -14,7 +14,7 @@ Synapse는 Codex CLI에서 역할 기반 오케스트레이션을 수행하는 �
 
 - `AGENTS.md`: 루트 오케스트레이터 규칙
 - `.codex/AGENTS.md`: `.codex` 디렉터리 메타 지시사항
-- `.codex/skills/*/SKILL.md`: 스킬 정의
+- `.agents/skills/*/SKILL.md`: 스킬 정의
 - `.codex/docs/codex-reference.md`: Codex CLI 레퍼런스 요약
 - `.codex/project/manifest.json.template`: 프로젝트 매니페스트 템플릿
 - `.codex/project/VERSION`: 커널 버전
@@ -22,6 +22,47 @@ Synapse는 Codex CLI에서 역할 기반 오케스트레이션을 수행하는 �
 ## 3. 빠른 시작 링크
 
 Quick Start 문서: [`Documents/QUICK-START.md`](./Documents/QUICK-START.md)
+
+### Codex CLI 멀티에이전트 활성화
+
+이 프로젝트는 Codex CLI의 실험적 멀티에이전트 기능을 지원합니다.
+
+활성화 방법:
+
+```bash
+# 1. 멀티에이전트 기능 활성화
+codex features enable multi_agent
+# 재시작 필요
+
+# 2. 프로젝트 trust 설정
+codex trust /path/to/codex_symbiote
+
+# 3. trust 확인
+codex trust --list
+```
+
+자세한 내용: [`.codex/docs/agents-migration.md`](./.codex/docs/agents-migration.md)
+
+### Codex CLI Rules 적용
+
+보안 정책은 `.codex/rules/`로 관리됩니다.
+
+```bash
+# Rules 파일 확인
+ls -1 .codex/rules/
+
+# 특정 명령어 테스트
+codex execpolicy check --pretty \
+  --rules .codex/rules/git.rules \
+  -- git push --force
+```
+
+프로젝트 Rules 정책:
+- **git.rules**: Git 워크플로우 제약 (force push, hard reset, clean, interactive 명령어)
+- **filesystem.rules**: 파일 시스템 보안 (system directory 삭제, 과도한 권한 부여)
+- **security.rules**: 일반 보안 정책 (sudo, remote script 실행)
+
+자세한 내용: [`.codex/docs/rules-guide.md`](./.codex/docs/rules-guide.md)
 
 ## 4. 초기화 전/후 상태 설명
 
@@ -73,6 +114,6 @@ Bootstrap 관점에서 `AGENTS.md`는 세션 시작 시 `manifest.json` 존재 �
 - 루트 오케스트레이터 규칙: [`AGENTS.md`](./AGENTS.md)
 - `.codex` 메타 규칙: [`.codex/AGENTS.md`](./.codex/AGENTS.md)
 - Codex CLI 레퍼런스: [`.codex/docs/codex-reference.md`](./.codex/docs/codex-reference.md)
-- setup 스킬 정의: [`.codex/skills/setup/SKILL.md`](./.codex/skills/setup/SKILL.md)
+- setup 스킬 정의: [`.agents/skills/setup/SKILL.md`](./.agents/skills/setup/SKILL.md)
 - manifest 템플릿: [`.codex/project/manifest.json.template`](./.codex/project/manifest.json.template)
 - 커널 버전: [`.codex/project/VERSION`](./.codex/project/VERSION)

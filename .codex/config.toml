@@ -1,0 +1,84 @@
+# Codex CLI Configuration for codex_symbiote
+# This file requires the project to be trusted in Codex CLI.
+# To trust: codex trust /path/to/codex_symbiote
+
+# Enable experimental multi-agent workflows
+[features]
+multi_agent = true
+
+# Agent Roles Configuration
+# Each role can have its own model, reasoning effort, sandbox mode, and instructions.
+# Relative paths are resolved from this .codex/ directory.
+
+[agents.analyst]
+description = "Pre-analysis expert. Use when requirements are vague or scope is unclear."
+config_file = "agents/analyst.toml"
+
+[agents.planner]
+description = "Strategic planning expert. Creates implementation plans from requirements."
+config_file = "agents/planner.toml"
+
+[agents.critic]
+description = "Plan validation expert. Reviews implementation plans for completeness and risks."
+config_file = "agents/critic.toml"
+
+[agents.implementer]
+description = "Code implementation expert. Implements features following project conventions."
+config_file = "agents/implementer.toml"
+
+[agents.reviewer]
+description = "Code review expert. Reviews code quality, refactoring correctness, and pattern compliance."
+config_file = "agents/reviewer.toml"
+
+[agents."build-fixer"]
+description = "Build error diagnosis and fix expert. Resolves compilation and build issues."
+config_file = "agents/build-fixer.toml"
+
+[agents.debugger]
+description = "Debugging expert. Diagnoses and fixes bugs, memory leaks, and performance issues."
+config_file = "agents/debugger.toml"
+
+[agents.researcher]
+description = "Technical research expert. Investigates libraries, APIs, and best practices."
+config_file = "agents/researcher.toml"
+
+[agents.vision]
+description = "Visual analysis expert. Analyzes screenshots, UI mockups, and design files."
+config_file = "agents/vision.toml"
+
+[agents.architect]
+description = "Architecture analysis expert. Evaluates codebase structure and proposes architectural decisions."
+config_file = "agents/architect.toml"
+
+[agents.designer]
+description = "UI/UX design expert. Evaluates interface patterns and proposes design improvements."
+config_file = "agents/designer.toml"
+
+[agents.migrator]
+description = "Migration expert. Handles API migrations, framework upgrades, and schema changes."
+config_file = "agents/migrator.toml"
+
+[agents."tdd-guide"]
+description = "TDD workflow guide. Leads test-driven development with red-green-refactor cycle."
+config_file = "agents/tdd-guide.toml"
+
+[agents."qa-tester"]
+description = "QA expert. Validates implementation against acceptance criteria and verifies test coverage."
+config_file = "agents/qa-tester.toml"
+
+[agents."security-reviewer"]
+description = "Security expert. Reviews code for vulnerabilities, injection, XSS, and dependency issues."
+config_file = "agents/security-reviewer.toml"
+
+[agents."doc-writer"]
+description = "Documentation expert. Creates and updates README, API docs, and architecture documentation."
+config_file = "agents/doc-writer.toml"
+
+# MCP Servers (from template)
+[mcpServers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+[mcpServers."sequential-thinking"]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]

@@ -31,7 +31,7 @@ Codex CLI 공식 문서가 정의한 항목과 이 프로젝트(Symbiote) 전용
 | 공식 | 프로젝트 루트 | 기본 `.git` 등 project_root_markers. |
 | Symbiote | `manifest.json` | `.codex/project/manifest.json`. setup 스킬로 생성. 스택·활성 스킬·역할 목록. |
 | Symbiote | `context.md` | `.codex/project/context.md`. setup 스킬로 생성. 프로젝트 컨벤션·컨텍스트. |
-| Symbiote | `.codex/skills/` | 프로젝트 수준 스킬. SKILL.md 필수. 공식 디렉터리 구조 아님. |
+| Symbiote | `.agents/skills/` | 프로젝트 수준 스킬. SKILL.md 필수. |
 | Symbiote | `.codex/project/` | manifest.json, context.md, state/ 등. setup·evolve·Ralph 상태 저장. |
 
 ---
@@ -115,7 +115,7 @@ Agent Skills는 AI 에이전트에 전문 기능을 확장하는 오픈 표준�
 
 | 위치 | 범위 |
 |---|---|
-| `.codex/skills/` | 프로젝트 수준 |
+| `.agents/skills/` | 프로젝트 수준 |
 | `~/.codex/skills/` | 사용자 수준 (글로벌) |
 
 ### 3.2 스킬 폴더 구조
@@ -170,7 +170,7 @@ metadata:
 | `.cursor/rules/*.mdc` (globs) | 서브디렉터리 `AGENTS.md` | 디렉터리 스코프로 대체 |
 | `.cursor/commands/*.md` | `AGENTS.md` 워크플로우 섹션 | 자연어 트리거로 대체 |
 | `.cursor/agents/*.md` | `AGENTS.md` 역할 정의 섹션 | 단일 에이전트 역할 전환 |
-| `.cursor/skills/` | `.codex/skills/` | 동일 포맷 (SKILL.md) |
+| `.cursor/skills/` | `.agents/skills/` | 동일 포맷 (SKILL.md) |
 | `.cursor/hooks.json` | `AGENTS.md` Safety Guidelines | 훅 미지원, 가이드라인으로 대체 |
 | `.cursor/project/manifest.json` | `.codex/project/manifest.json` | 동일 구조 |
 | `.cursor/rules/project/context.mdc` | `.codex/project/context.md` | 확장자 변경 (.mdc → .md) |

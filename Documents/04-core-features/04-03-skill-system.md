@@ -6,9 +6,9 @@
 
 ## 관련 파일
 
-- `.codex/skills/*/SKILL.md`
+- `.agents/skills/*/SKILL.md`
 - `.codex/project/manifest.json.template`의 `activated.skills`
-- `.codex/skills/doctor/scripts/validate.sh`
+- `.agents/skills/doctor/scripts/validate.sh`
 
 ## 스킬 계약
 

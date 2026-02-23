@@ -10,7 +10,7 @@
 1. doctor 실행
 
 ```bash
-bash .codex/skills/doctor/scripts/validate.sh
+bash .agents/skills/doctor/scripts/validate.sh
 ```
 
 2. 스킬 수 검증

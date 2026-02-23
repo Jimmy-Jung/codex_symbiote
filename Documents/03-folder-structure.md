@@ -21,13 +21,8 @@
 ├── project/
 │   ├── VERSION
 │   ├── manifest.json.template
-│   ├── state/
-│   │   └── .gitkeep
-│   └── usage-data/
-│       ├── .gitkeep
-│       ├── agents/
-│       ├── commands/
-│       └── skills/
+│   └── state/
+│       └── .gitkeep
 └── skills/
     ├── ast-refactor/
     ├── autonomous-loop/
@@ -41,7 +36,7 @@
 - `.codex/AGENTS.md`: `.codex` 하위 메타 지시
 - `.codex/docs/`: Codex 공식/커스텀 매핑 문서
 - `.codex/project/`: 런타임 상태, 템플릿, 버전
-- `.codex/skills/`: 기능 단위 워크플로우 정의
+- `.agents/skills/`: 기능 단위 워크플로우 정의
 - `Documents/`: 사람 중심 프로젝트 문서
 
 ## 구조 다이어그램
@@ -57,7 +52,6 @@ flowchart TD
     CP --> CV[VERSION]
     CP --> CT[manifest.json.template]
     CP --> CState[state]
-    CP --> CUsage[usage-data]
 ```
 
 ## setup 이후 추가되는 파일

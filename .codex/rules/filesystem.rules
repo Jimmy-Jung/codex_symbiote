@@ -1,0 +1,42 @@
+# Filesystem Security Rules
+# Converted from: .cursor/hooks/guard-shell.sh
+#
+# Purpose: Prevent destructive filesystem operations.
+# All rules use decision="forbidden" to completely block dangerous commands.
+
+# System root directory deletion - absolutely forbidden
+prefix_rule(
+    pattern = ["rm", "-rf", "/"],
+    decision = "forbidden",
+    justification = "시스템 루트 디렉터리 삭제는 차단됩니다.",
+)
+
+# Home directory deletion - absolutely forbidden
+prefix_rule(
+    pattern = ["rm", "-rf", "~"],
+    decision = "forbidden",
+    justification = "홈 디렉터리 삭제는 차단됩니다.",
+)
+
+# Git repository deletion - absolutely forbidden
+prefix_rule(
+    pattern = ["rm", "-rf", ".git"],
+    decision = "forbidden",
+    justification = "Git 저장소 삭제는 차단됩니다. 의도적이라면 수동으로 실행하세요.",
+    not_match = [
+        "rm -rf .gitignore",
+        "rm -rf src/.gitkeep",
+    ],
+)
+
+# Excessive permissions - absolutely forbidden
+prefix_rule(
+    pattern = ["chmod", "-R", "777"],
+    decision = "forbidden",
+    justification = "chmod -R 777은 과도한 권한을 부여합니다. 적절한 권한(예: 755, 644)을 지정하세요.",
+    not_match = [
+        "chmod -R 755 .",
+        "chmod -R 644 *.txt",
+        "chmod 755 script.sh",
+    ],
+)

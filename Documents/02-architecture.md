@@ -6,7 +6,7 @@
 구조는 3개 레이어로 분리됩니다.
 
 - 규칙 레이어: `AGENTS.md`, `.codex/AGENTS.md`
-- 실행 레이어: `.codex/skills/*/SKILL.md`
+- 실행 레이어: `.agents/skills/*/SKILL.md`
 - 상태 레이어: `.codex/project/*`
 
 ## 시스템 흐름
@@ -22,7 +22,7 @@ flowchart TD
     S --> C[.codex/project/context.md]
     M --> R[Role Selection]
     R --> K[Skill Execution]
-    K --> ST[State and Usage Data]
+    K --> ST[State Updates]
     K --> V[Verify doctor/review]
     V --> O[Response]
     classDef safe fill:#B0BEC5,stroke:#455A64,color:#111111,stroke-width:1px;
@@ -44,7 +44,7 @@ flowchart TD
 
 ### 실행 레이어
 
-- `.codex/skills/{name}/SKILL.md`
+- `.agents/skills/{name}/SKILL.md`
   - frontmatter(`name`, `description`, `source`) 기반 계약
   - 필요 시 `scripts/`, `references/`, `assets/` 연계
 - Core 스킬 4개
@@ -55,7 +55,6 @@ flowchart TD
 - `.codex/project/VERSION`
 - `.codex/project/manifest.json.template`
 - `.codex/project/state/`
-- `.codex/project/usage-data/`
 - setup 이후 생성 대상
   - `.codex/project/manifest.json`
   - `.codex/project/context.md`

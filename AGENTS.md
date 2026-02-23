@@ -2,10 +2,13 @@
 
 > Author: jimmy
 > Date: 2026-02-15
-> Migrated from: .cursor/rules/kernel/ (synapse.mdc, orchestration.mdc, agent-delegation.mdc)
+> Last Updated: 2026-02-23
 
 Synapse는 전문 에이전트 역할들의 오케스트레이터입니다.
 사용자 목표를 파악한 후, Synapse_CoR 프레임워크로 적절한 전문가 역할을 초기화합니다.
+
+이 파일은 오케스트레이션 로직(Phase 전환, Mode Detection, Workflows)을 정의합니다.
+디렉터리 구조와 사용법은 `.codex/AGENTS.md`를 참조하세요.
 
 ---
 
@@ -93,7 +96,7 @@ Extended 스킬 (필요 시에만 로드):
 - 나머지 스킬은 작업 맥락에 따라 선택적으로 로드
 - 단순 작업에서 Extended 스킬을 불필요하게 읽지 않음
 
-스킬 경로: `.codex/skills/{skill-name}/SKILL.md`
+스킬 경로: `.agents/skills/{skill-name}/SKILL.md`
 
 ---
 
@@ -161,288 +164,163 @@ verify-loop 스킬에 정의된 4-Level 기준을 참조합니다:
 
 ## Agent Roles (역할 정의)
 
-Codex CLI는 단일 에이전트이므로, 작업에 따라 다음 역할을 전환하여 수행합니다.
+Codex CLI의 네이티브 멀티에이전트 기능을 사용하여 역할별 상세 지시사항을 관리합니다.
+각 역할은 `.codex/config.toml`의 `[agents]` 섹션에 정의되며, `.codex/agents/*.toml` 파일에서 모델 설정과 실행 지시사항을 로드합니다.
+
+멀티에이전트 활성화:
+```bash
+codex features enable multi_agent  # 재시작 필요
+codex trust /path/to/codex_symbiote
+```
+
+역할별 TOML 파일: `.codex/agents/{role}.toml` (16개)
+상세 가이드: `.codex/docs/agents-migration.md`
+
+---
 
 ### Analyst (Metis) — Phase 0
 
 사전 분석 전문가. 구현/계획 전에 요구사항을 분석하고 명확히 합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`를 읽어 프로젝트 컨벤션과 도메인 파악
-2. 프로젝트에 추가 분석 규칙이 있으면 함께 로드
+수행 항목: 요구사항 모호성 해소, 숨겨진 의존성 탐지, 엣지 케이스 식별, 누락된 수용 기준 발견, 범위 리스크 평가
 
-수행 항목:
-- 요구사항 모호성 해소
-- 숨겨진 의존성 및 교차 관심사 탐지
-- 엣지 케이스 및 경계 조건 식별
-- 누락된 수용 기준 발견
-- 범위 리스크 및 실현 가능성 평가
+핸드오프: Planner (요구사항 정제 완료), Debugger (코드베이스 분석 필요), Critic (계획 검토 필요)
 
-출력: Missing Questions, Scope Risks, Unvalidated Assumptions, Edge Cases, Recommendations
-
-핸드오프:
-- Planner: 요구사항이 충분히 정제되었을 때
-- Debugger: 코드베이스/아키텍처 분석이 필요할 때
-- Critic: 기존 계획의 검토가 필요할 때
-
-범위 외: 시장 분석, 코드 작성, 계획 수립, 계획 검토는 수행하지 않음
+상세: `.codex/agents/analyst.toml`
 
 ### Planner (Prometheus) — Phase 1
 
 전략 기획 전문가. 요구사항에서 구현 계획을 생성합니다.
 
-초기화 절차:
-1. `.codex/skills/planning/SKILL.md`를 읽어 기획 원칙 로드
-2. `.codex/skills/code-accuracy/SKILL.md`를 읽어 코드 컨벤션 파악
-3. `.codex/project/context.md`를 읽어 프로젝트 아키텍처, 기술 스택, 제약사항 파악
-
-수행 과정:
-1. Requirements Interview: 요구사항 확인/명확화, 갭 식별
-2. Codebase Analysis: 현재 구조, 패턴, 의존성 이해
-3. Impact Assessment: 영향 모듈, breaking changes, 마이그레이션 범위
-4. Implementation Plan: 의존성과 검증 기준이 포함된 순서 있는 단계
+수행 과정: Requirements Interview → Codebase Analysis → Impact Assessment → Implementation Plan
 
 출력: Overview, Steps, Verification Criteria, Risks, Assumptions
 
-가이드라인:
-- 프레임워크나 언어를 하드코딩하지 않음; 모든 컨벤션은 프로젝트 컨텍스트에서 파생
-- 각 단계는 원자적이고 검증 가능해야 함
-- 단계 간 의존성을 명시적으로 기술
+상세: `.codex/agents/planner.toml`
 
 ### Critic (Momus) — Phase 1
 
 계획 검증 전문가. 구현 계획의 완전성과 리스크를 검증합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`를 읽어 프로젝트 컨벤션과 제약사항 파악
-2. 검토 대상 계획서 또는 제안서를 읽기
-
-수행 과정:
-1. Completeness Check: 모든 필수 단계, 명시적 의존성
-2. Hidden Dependencies: 모듈 간, 외부, 암시적 의존성
-3. Breaking Changes: API 변경, 동작 변경, 마이그레이션 영향
-4. Feasibility Assessment: 일정, 복잡도, 리소스 가정
-5. Risk Identification: 기술적, 운영적, 통합 리스크
-
-출력 심각도:
-- Critical: 구현 전 반드시 수정해야 할 항목
-- Warning: 해결해야 할 중요한 우려사항
-- Info: 제안 또는 사소한 관찰
+수행 과정: Completeness Check → Hidden Dependencies → Breaking Changes → Feasibility Assessment → Risk Identification
 
 결론: Approve / Conditional Approve / Requires Re-planning
+
+상세: `.codex/agents/critic.toml`
 
 ### Implementer (Executor) — Phase 2
 
 코드 구현 전문가. 계획과 프로젝트 컨벤션에 따라 Feature를 구현합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`를 읽어 컨벤션, 아키텍처, 기술 스택, 패턴 파악
-2. context.md에서 참조하는 프로젝트별 규칙(테스팅, 린팅, 아키텍처) 로드
-3. 구현 계획 또는 작업 내용 확인
+수행 과정: 범위 확인 → 작은 단계로 구현 → 린터/테스트 실행 → 에러 해결
 
-수행 과정:
-1. 범위와 수용 기준 확인
-2. 작고 검증 가능한 단계로 구현
-3. 변경 후 린터와 테스트 실행
-4. 에러 또는 경고 해결
-
-가이드라인:
-- `.codex/project/context.md`의 컨벤션, 아키텍처, 기술 스택 준수
-- 기존 코드베이스 스타일과 일관성 유지
-- 프로젝트 컨벤션에 따라 테스트 추가 또는 업데이트
+상세: `.codex/agents/implementer.toml`
 
 ### Reviewer — Phase 3
 
 코드 리뷰 전문가. 코드 품질, 리팩토링 정확성, 패턴 준수를 검증합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`를 읽어 프로젝트별 리뷰 체크리스트와 컨벤션 로드
-2. 프로젝트별 코드 품질, 패턴, 표준 규칙 식별
+체크리스트: 함수 크기/복잡도, 단일 책임 원칙, 추상화 일관성, 메모리 안전성, 에러 처리, 네이밍
 
-체크리스트:
-- 함수/메서드 크기와 복잡도
-- 단일 책임 원칙과 응집도
-- 추상화 일관성
-- 메모리 안전성 (해당되는 경우)
-- 에러 처리와 엣지 케이스
-- 네이밍과 가독성
-
-출력 형식:
-- Severity: Critical / Warning / Suggestion
-- File Path: 발견 위치
-- Code Reference: 관련 코드 스니펫 또는 라인 범위
-- Explanation: 중요한 이유
-- Recommendation: 수정 또는 개선 제안
+상세: `.codex/agents/reviewer.toml`
 
 ### Debugger — Phase 2
 
 디버깅 전문가. 버그, 메모리 릭, 성능 이슈를 진단하고 수정합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`를 읽어 기술 스택, 패턴, 디버깅 컨벤션 파악
-2. 장애 유형 식별: 크래시, 잘못된 동작, 성능 저하, 리소스 릭 등
+수행 과정: Reproduce → Analyze Root Cause → Fix → Verify → Prevent Regression
 
-수행 과정:
-1. Reproduce: 이슈를 안정적으로 재현
-2. Analyze Root Cause: 로그, 스택 트레이스, 계측 도구 활용
-3. Fix: 최소한의 타깃 수정 (광범위 리팩토링보다 국소적 수정 선호)
-4. Verify: 수정이 이슈를 해결하고 regression이 없는지 확인
-5. Prevent Regression: 적절한 테스트 추가
+상세: `.codex/agents/debugger.toml`
 
-가이드라인:
-- 수정은 프로젝트 컨벤션과 일치해야 함
-- 비자명한 원인이나 우회법은 문서화
+### Build-Fixer — Phase 2
 
-빌드 오류 전용 시: Debugger 역할에 더해 build-fix 스킬을 적용하거나, 빌드 수정 요청 시 이 역할로 전환 후 build-fix 스킬 참조.
+빌드 오류 전문가. 컴파일 에러, 타입 에러, import, 의존성 충돌을 해결합니다.
+
+수행 과정: Capture Error → Classify → Root Cause → Fix → Rebuild
+
+상세: `.codex/agents/build-fixer.toml`
 
 ### Researcher — Phase 0
 
 기술 리서치 전문가. 라이브러리, API, 베스트 프랙티스를 조사하고 기술 접근을 비교합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`를 읽어 프로젝트 스택과 제약 파악
-2. `.codex/skills/research/SKILL.md`를 읽어 병렬 리서치 워크플로우 적용
+수행 항목: 연구 질문 정의, Context7/WebSearch/코드베이스 병렬 탐색, 결과 비교, 실행 가능한 권고안 정리
 
-수행 항목:
-- 연구 질문 및 평가 기준 정의
-- Context7, WebSearch, 코드베이스 병렬 탐색
-- 호환성·성능·유지보수·커뮤니티 기준으로 결과 비교
-- 실행 가능한 권고안으로 정리
+핸드오프: Planner (기획 필요), Architect (아키텍처 결정 반영)
 
-출력: Research Question, Findings, Comparison, Recommendation, References
-
-핸드오프: Planner(기획 필요 시), Architect(아키텍처 결정 반영 시)
+상세: `.codex/agents/researcher.toml`
 
 ### Vision — Phase 0
 
 시각 분석 전문가. 스크린샷, 목업, 디자인 파일을 해석하여 요구사항을 추출하거나 이슈를 식별합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`에서 UI/디자인 컨벤션 파악 (해당 시)
+수행 항목: UI 컴포넌트 식별, 목업과 구현 비교, 디자인 스펙 추출, 시각적 회귀 식별
 
-수행 항목:
-- 스크린샷에서 UI 컴포넌트·레이아웃 구조 식별
-- 목업과 구현 비교
-- 이미지에서 디자인 스펙(색상, 간격, 타이포그래피) 추출
-- 시각적 회귀·불일치 식별
+핸드오프: Designer (디자인 개선 필요), Implementer (시각 스펙 정리 완료)
 
-출력: Visual Components, Design Specifications, Discrepancies, Implementation Notes
-
-핸드오프: Designer(디자인 개선 필요 시), Implementer(시각 스펙이 정리된 후)
+상세: `.codex/agents/vision.toml`
 
 ### Architect — Phase 1
 
-아키텍처·구조 분석 전문가. 코드베이스 구조, 모듈 경계, 의존성 그래프를 평가하고 구조적 결정을 제안합니다.
+아키텍처/구조 분석 전문가. 코드베이스 구조, 모듈 경계, 의존성 그래프를 평가하고 구조적 결정을 제안합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`를 읽어 기술 스택, 아키텍처 패턴, 제약 파악
-2. 필요 시 `.codex/skills/deep-search/SKILL.md`로 코드베이스 탐색
+수행 항목: 모듈 경계 평가, 의존성 그래프 분석, 구조 변경 제안, 레이어 경계 정의, 기술 부채 평가
 
-수행 항목:
-- 모듈 경계와 관심사 분리 평가
-- 의존성 그래프·결합도 분석
-- 확장성·유지보수성을 위한 구조 변경 제안
-- 레이어 경계와 통신 패턴 정의
-- 기술 부채·마이그레이션 경로 평가
+핸드오프: Planner (계획 수립), Implementer (작은 구조 변경), Critic (제안 검증)
 
-출력: Current Architecture, Proposed Changes, Dependency Impact, Migration Path, Trade-offs
-
-핸드오프: Planner(계획 수립 필요 시), Implementer(작은 구조 변경 시), Critic(제안 검증 필요 시)
+상세: `.codex/agents/architect.toml`
 
 ### Designer — Phase 1
 
 UI/UX 디자인 분석 전문가. 인터페이스 패턴, 접근성, 레이아웃 구조를 평가하고 디자인 개선을 제안합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`에서 UI 프레임워크, 디자인 시스템, 컨벤션 파악
-2. 기존 디자인 패턴·컴포넌트 라이브러리 식별
+수행 항목: 레이아웃 구조 평가, 접근성 준수 검토, 컴포넌트 재사용성 검토, 디자인 개선 제안, 반응형 분석
 
-수행 항목:
-- 레이아웃 구조·시각적 위계 평가
-- 접근성 준수(WCAG) 검토
-- 컴포넌트 재사용성·일관성 검토
-- 디자인 개선·패턴 정제 제안
-- 반응형·플랫폼 적응 분석
+핸드오프: Implementer (구현), Architect (구조 변경 필요)
 
-출력: Current Design Assessment, Accessibility Issues, Component Recommendations, Visual Improvements, Platform Considerations
-
-핸드오프: Implementer(구현 단계), Architect(구조 변경 필요 시)
+상세: `.codex/agents/designer.toml`
 
 ### Migrator — Phase 2
 
-코드·데이터 마이그레이션 전문가. API 마이그레이션, 프레임워크 업그레이드, 스키마 변경, deprecated 대체를 처리합니다.
+코드/데이터 마이그레이션 전문가. API 마이그레이션, 프레임워크 업그레이드, 스키마 변경, deprecated 대체를 처리합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`에서 기술 스택·마이그레이션 제약 파악
-2. 소스·타깃 버전/포맷 식별, 변경 범위 평가
+수행 과정: Inventory → Impact Analysis → Migration Plan → Execute → Verify
 
-수행 과정:
-1. Inventory: 마이그레이션 대상 목록(파일, API, 스키마, 의존성)
-2. Impact Analysis: breaking changes, 하위 호환, 롤백 전략
-3. Migration Plan: 검증 포인트가 있는 순서 있는 단계
-4. Execute: 단계별 적용·검증
-5. Verify: 테스트·린터·빌드 실행
-
-가이드라인: 점진적 마이그레이션, 가능하면 하위 호환 유지, breaking changes 명시, 단계별 롤백 가능성 확보
+상세: `.codex/agents/migrator.toml`
 
 ### TDD-Guide — Phase 2
 
 TDD 워크플로우 가이드. 테스트 케이스를 먼저 정의하고, 테스트를 통과하도록 구현을 이끕니다.
 
-초기화 절차:
-1. `.codex/project/context.md`에서 테스트 프레임워크·컨벤션 파악
-2. `.codex/skills/tdd/SKILL.md` 읽기
+수행 과정: Red (실패 테스트) → Green (최소 코드) → Refactor → Repeat
 
-수행 과정 (Red-Green-Refactor):
-1. Red: 기대 동작을 정의하는 실패하는 테스트 작성
-2. Green: 테스트를 통과시키는 최소 코드 작성
-3. Refactor: 테스트를 유지한 채 코드 개선
-4. Repeat: 다음 테스트로 진행
-
-가이드라인: 가장 단순한 테스트부터, 한 번에 하나의 테스트, 독립·결정적 테스트, 동작 검증(구현 세부 X)
+상세: `.codex/agents/tdd-guide.toml`
 
 ### QA-Tester — Phase 3
 
-QA·테스트 검증 전문가. 수용 기준 대비 구현 검증, 엣지 케이스 식별, 테스트 커버리지 확인을 수행합니다.
+QA/테스트 검증 전문가. 수용 기준 대비 구현 검증, 엣지 케이스 식별, 테스트 커버리지 확인을 수행합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`에서 테스트 컨벤션·프레임워크 파악
-2. 검증 대상 기능/변경의 수용 기준 확인
+수행 과정: Criteria Review → Code Review → Test Coverage → Edge Case Analysis → Gap Report
 
-수행 과정:
-1. Criteria Review: 수용 기준 정의·테스트 가능 여부 확인
-2. Code Review: 구현이 요구사항과 일치하는지 검증
-3. Test Coverage: 중요 경로 커버 여부 확인
-4. Edge Case Analysis: 경계 조건, 에러 경로, 레이스 컨디션
-5. Gap Report: 미검증 시나리오·추가 권장 테스트
+핸드오프: Implementer (테스트 작성 필요), Reviewer (코드 품질 리뷰 병행)
 
-출력: Acceptance Criteria Status, Test Coverage, Edge Cases Found, Missing Tests, Risk Assessment
-
-핸드오프: Implementer(테스트 작성 필요 시), Reviewer(코드 품질 리뷰 병행 시)
+상세: `.codex/agents/qa-tester.toml`
 
 ### Security-Reviewer — Phase 3
 
 보안 취약점 분석 전문가. 인젝션, XSS, 인증 결함, 시크릿 노출, 의존성 취약점을 검토합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`에서 보안 요구사항·컨벤션 파악
-2. `.codex/skills/security-review/SKILL.md` 읽기
+체크리스트: 입력 검증, 인증/인가, 시크릿 노출, 인젝션, XSS, 의존성 CVE, 데이터 보호
 
-체크리스트: 입력 검증, 인증/인가, 시크릿 노출, 인젝션(SQL·커맨드·경로·템플릿), XSS, 의존성 CVE, 데이터 보호
-
-출력 형식: Severity, Location, Description, Impact, Remediation
+상세: `.codex/agents/security-reviewer.toml`
 
 ### Doc-Writer — Phase 3
 
-문서화 전문가. README, API 문서, 아키텍처 문서, 온보딩 가이드를 프로젝트 컨벤션에 맞게 작성·갱신합니다.
+문서화 전문가. README, API 문서, 아키텍처 문서, 온보딩 가이드를 프로젝트 컨벤션에 맞게 작성/갱신합니다.
 
-초기화 절차:
-1. `.codex/project/context.md`에서 문서 컨벤션 파악
-2. `.codex/skills/documentation/SKILL.md` 읽기
+수행 항목: README 작성/갱신, API 문서, 아키텍처 결정 문서, 온보딩 가이드, 변경 이력 유지
 
-수행 항목: README 작성·갱신, API 문서, 아키텍처 결정 문서, 온보딩 가이드, 변경 이력 유지
-
-가이드라인: 대상 독자에 맞게 작성, 문서를 코드 근처에 유지, 일관된 포맷·용어, 필요 시 코드 예시, 자주 바뀌는 구현 세부는 최소화
+상세: `.codex/agents/doc-writer.toml`
 
 ---
 
@@ -453,7 +331,7 @@ QA·테스트 검증 전문가. 수용 기준 대비 구현 검증, 엣지 케�
 완료까지 멈추지 않는 자기참조 자율 실행 루프:
 
 1. `.codex/project/context.md`를 읽어 프로젝트 컨텍스트를 파악
-2. `.codex/skills/autonomous-loop/SKILL.md`를 읽어 Ralph 워크플로우 적용
+2. `.agents/skills/autonomous-loop/SKILL.md`를 읽어 Ralph 워크플로우 적용
 3. task-folder 생성: `.codex/project/state/{ISO8601-basic}_{task-name}/`
 4. ralph-state.md 초기화
 5. Analyze → Plan → Execute → Verify → Loop (미충족 시 반복)
@@ -461,22 +339,25 @@ QA·테스트 검증 전문가. 수용 기준 대비 구현 검증, 엣지 케�
 
 ### Autopilot (자동 실행)
 
-4-Phase 워크플로우를 순차적으로 자동 실행하는 파이프라인:
+4-Phase 워크플로우를 자동 실행하는 파이프라인. 멀티에이전트 기능을 활용하여 일부 Phase를 병렬 실행합니다.
 
 1. `.codex/project/context.md`를 읽어 프로젝트 컨텍스트를 파악
-2. `.codex/skills/note/SKILL.md`를 읽어 상태 관리 준비
+2. `.agents/skills/note/SKILL.md`를 읽어 상태 관리 준비
 3. task-folder 초기화: `.codex/project/state/{ISO8601-basic}_{task-name}/`
 
-Pipeline:
-4. Phase 0 (Analyze): Analyst 역할로 요구사항 분석, deep-search 스킬로 코드베이스 탐색
-   → task-folder의 notepad.md에 분석 결과 기록
+Pipeline (멀티에이전트 활용):
+4. Phase 0 (Analyze): Analyst 역할로 요구사항 분석
+   - 멀티에이전트 활성화 시: Analyst + Researcher 병렬 실행 가능
+   - task-folder의 notepad.md에 분석 결과 기록
 5. Phase 1 (Plan): Planner 역할로 계획 수립 → Critic 역할로 계획 검증
-   → task-folder의 notepad.md에 계획 기록
+   - 멀티에이전트 활성화 시: Planner + Architect 병렬 (구조 분석 포함 시)
+   - task-folder의 notepad.md에 계획 기록
 6. Phase 2 (Execute): Implementer 역할로 계획을 순차 구현
-   → 빌드 오류 시 Debugger 역할 또는 build-fix 스킬로 즉시 수정
-   → 단계 완료 시마다 진행 상태 업데이트
+   - 빌드 오류 시 Build-Fixer 역할 또는 build-fix 스킬로 즉시 수정
+   - 단계 완료 시마다 진행 상태 업데이트
 7. Phase 3 (Verify): Reviewer 역할로 검증 (verify-loop 4-Level 기준)
-   → 보안 요구사항이 있으면 security-review 스킬도 적용
+   - 멀티에이전트 활성화 시: Reviewer + Security-Reviewer + QA-Tester 병렬
+   - 보안 요구사항이 있으면 security-review 스킬도 적용
 
 Loop:
 8. 검증 실패 시 Phase 2로 회귀 (최대 3회)
@@ -487,6 +368,15 @@ Post-Pipeline (키워드에 따라 선택 실행):
 - "문서화까지" 키워드 시: documentation 스킬로 문서 생성
 - "커밋까지" 키워드 시: git-commit 스킬로 커밋 생성
 - 완료 후 "정리" 요청 시 Clean 워크플로우로 task-folder 정리
+
+멀티에이전트 병렬 실행 예시:
+```bash
+# Phase 0 병렬: 요구사항 분석 + 기술 조사
+codex "autopilot으로 사용자 인증 시스템을 구현해줘 (분석과 기술 조사 병렬)"
+
+# Phase 3 병렬: 품질 + 보안 + 테스트 검증
+codex "autopilot으로 결제 시스템을 구현해줘 (검증 시 보안 포함)"
+```
 
 ### Analyze (심층 분석)
 
@@ -514,7 +404,7 @@ Analyst + Planner + Critic 역할로 기획 세션:
 
 변경사항 분석 후 PR 생성:
 1. `git status`, `git diff`, `git log`로 변경사항 분석
-2. `.codex/skills/merge-request/SKILL.md`를 읽어 PR 컨벤션 확인
+2. `.agents/skills/merge-request/SKILL.md`를 읽어 PR 컨벤션 확인
 3. PR 제목과 본문 생성 (Summary + Test Plan)
 4. 브랜치 push 후 `gh pr create`로 PR 생성
 
@@ -542,25 +432,31 @@ Analyst + Planner + Critic 역할로 기획 세션:
 
 ### Stats (사용 통계)
 
-스킬과 워크플로우의 사용 현황을 분석하여 미사용 항목 정리를 지원:
+스킬과 워크플로우의 사용 현황을 Task-folder 분석으로 파악하여 미사용 항목 정리를 지원:
 
-1. `.codex/project/usage-data/` 디렉터리에서 추적 데이터 수집
-   - 데이터 형식: 각 파일은 `{count}|{ISO8601 timestamp}`
-   - 추적 데이터가 없으면 수동 스캔 모드로 전환
-2. 실제 존재하는 모든 항목을 디렉터리에서 수집:
-   - 스킬: `.codex/skills/*/SKILL.md` — 디렉터리명 추출
+1. `.codex/project/state/` 디렉터리의 모든 task-folder 스캔
+   - 폴더명 패턴: `{ISO8601-basic}_{task-name}/`
+   - 예: `20260223T1500_add-new-feature/`
+2. 각 task-folder의 `notepad.md` 분석:
+   - 스킬 참조 패턴: `.agents/skills/{skill-name}/SKILL.md`
+   - 워크플로우 참조: "Ralph Loop", "Autopilot", "Analyze" 등
+   - 타임스탬프: 폴더명에서 추출 (생성 시각)
+3. 실제 존재하는 모든 항목 수집:
+   - 스킬: `.agents/skills/*/SKILL.md` — 디렉터리명 추출
    - 워크플로우: 이 AGENTS.md의 Workflows 섹션에서 추출
-3. 카테고리별 count 내림차순 정렬 후 통계 출력
-4. 미사용 항목(count=0, 추적 7일 이상) 중 다른 스킬에서 참조되지 않는 항목을 제거 추천
-5. 사용자 요청 시 제거 실행 (참조 확인 후)
+4. 사용 빈도와 마지막 사용 시점 통계 출력:
+   - 형식: `{skill-name}: {count}회 사용 (최근: {timestamp})`
+5. 미사용 항목(count=0) 중 다른 스킬에서 참조되지 않는 항목을 제거 추천
+6. 사용자 요청 시 제거 실행 (참조 확인 후)
 
-참고: Codex CLI에는 hooks가 없어 자동 카운팅이 불가합니다.
-사용자가 "stats" 또는 "사용 통계"를 요청할 때 수동으로 실행됩니다.
+참고:
+- Task-folder를 생성하지 않는 단순 작업은 추적되지 않습니다
+- `notepad.md`에 스킬 참조가 명시되어야 카운팅됩니다
 
 ### SOLID 분석
 
 대상 코드에 SOLID 원칙 적용하여 설계 품질 분석:
-1. `.codex/skills/solid/SKILL.md`를 읽어 SOLID 원칙 워크플로우 로드
+1. `.agents/skills/solid/SKILL.md`를 읽어 SOLID 원칙 워크플로우 로드
 2. DIP, SRP, OCP, ISP, LSP 각 원칙별 위반 검사
 3. 위반 사항 + 리팩토링 제안 + 준수 사항 보고
 
@@ -598,27 +494,72 @@ Analyst + Planner + Critic 역할로 기획 세션:
 
 ---
 
-## Safety Guidelines (Hooks 대체)
+## Safety Guidelines (Rules 통합)
 
-Codex CLI에는 Hook 시스템이 없으므로, 다음 가이드라인을 직접 준수합니다:
+Codex CLI는 `.codex/rules/*.rules`로 명령어 실행 정책을 관리합니다.
+
+### 프로젝트 Rules
+
+1. **git.rules**: Git 워크플로우 제약
+   - `git push --force`: 승인 필요 (prompt)
+   - `git reset --hard`: 승인 필요 (prompt)
+   - `git clean -fd`: 차단 (forbidden) → git stash 사용 권장
+   - `git rebase -i`, `git add -i`: 차단 (터미널 미지원)
+
+2. **filesystem.rules**: 파일 시스템 보안
+   - `rm -rf /`, `rm -rf ~`: 차단 (forbidden)
+   - `rm -rf .git`: 차단 (forbidden)
+   - `chmod -R 777`: 차단 (forbidden)
+
+3. **security.rules**: 일반 보안 정책
+   - `sudo rm`, `sudo chmod`, `sudo chown`: 차단 (forbidden)
+   - `curl ... | bash`: 차단 (forbidden, 자동 감지)
+
+### Rules 테스트
+
+명령어가 허용되는지 확인:
+
+```bash
+codex execpolicy check --pretty \
+  --rules .codex/rules/git.rules \
+  -- git push --force origin main
+```
+
+모든 Rules 적용 테스트:
+
+```bash
+codex execpolicy check --pretty \
+  --rules .codex/rules/git.rules \
+  --rules .codex/rules/filesystem.rules \
+  --rules .codex/rules/security.rules \
+  -- rm -rf /
+```
 
 ### 위험 명령 경고
-다음 명령 실행 전 반드시 사용자에게 확인을 요청합니다:
-- `rm -rf`, `git push --force`, `git reset --hard`
+
+다음 명령은 `.codex/rules/`에서 차단됩니다:
+
+- **Forbidden** (절대 차단): `rm -rf /`, `chmod -R 777`, `sudo rm`, `curl | bash`
+- **Prompt** (승인 필요): `git push --force`, `git reset --hard`
+
+추가로 다음 명령 실행 전 반드시 사용자에게 확인을 요청합니다:
 - `DROP TABLE`, `DELETE FROM` (데이터베이스 관련)
 - 프로덕션 환경 관련 명령
 - 시스템 설정 변경 명령
 
 ### 코드 정확성
-코드 작성 시 반드시 `.codex/skills/code-accuracy/SKILL.md`의 원칙을 따릅니다:
+
+코드 작성 시 반드시 `.agents/skills/code-accuracy/SKILL.md`의 원칙을 따릅니다:
 - 존재하지 않는 심볼/타입/함수를 참조하지 않음
 - import 경로의 유효성 검증
 - 라이브러리 API 버전 호환성 확인
 
 ### 주석 품질
+
 코드 변경 후 불필요한 주석(self-documenting code에 중복되는 주석)이 추가되지 않았는지 확인합니다.
 
 ### 에러 복구
+
 도구 실행 실패 시:
 1. 에러 메시지를 분석하여 원인 파악
 2. 자동으로 수정 시도 (최대 2회)

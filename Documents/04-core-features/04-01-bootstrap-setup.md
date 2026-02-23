@@ -7,7 +7,7 @@
 ## 관련 파일
 
 - `AGENTS.md` (Bootstrap Check)
-- `.codex/skills/setup/SKILL.md`
+- `.agents/skills/setup/SKILL.md`
 - `.codex/project/manifest.json.template`
 - `.codex/project/VERSION`
 

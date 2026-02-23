@@ -24,7 +24,7 @@ sequenceDiagram
     else setup 이후
         Orchestrator->>Skill: 요청 맞춤 스킬 실행
     end
-    Skill->>Project: state/usage-data 갱신
+    Skill->>Project: state 갱신 (task-folder)
     Agent->>User: 결과 + 검증 상태 반환
 ```
 
@@ -35,7 +35,6 @@ sequenceDiagram
 | 입력 | `.codex/project/manifest.json` | setup 후 프로젝트 메타 |
 | 입력 | `.codex/project/context.md` | setup 후 프로젝트 컨텍스트 |
 | 처리 | `.codex/project/state/*` | 루프 작업별 상태 |
-| 처리 | `.codex/project/usage-data/*` | 스킬/명령 사용 통계 |
 | 기준 | `.codex/project/manifest.json.template` | setup 생성 기준 템플릿 |
 | 기준 | `.codex/project/VERSION` | 커널 버전 |
 
