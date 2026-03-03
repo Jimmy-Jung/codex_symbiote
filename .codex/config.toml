@@ -1,15 +1,35 @@
-# Codex CLI Configuration for codex_symbiote
-# This file requires the project to be trusted in Codex CLI.
-# To trust: codex trust /path/to/codex_symbiote
+#:schema https://developers.openai.com/codex/config-schema.json
 
-# Enable experimental multi-agent workflows
+# Codex CLI configuration for this repository.
+# Project-scoped settings are loaded only when the project is trusted.
+# Trust command: codex trust /path/to/codex_symbiote
+
+# Keep enough budget for layered AGENTS instructions.
+project_doc_max_bytes = 65536
+
 [features]
+# Experimental feature: enables spawn_agent/send_input/resume_agent/wait/close_agent tools.
 multi_agent = true
 
-# Agent Roles Configuration
-# Each role can have its own model, reasoning effort, sandbox mode, and instructions.
-# Relative paths are resolved from this .codex/ directory.
+[agents]
+# Official multi-agent controls.
+max_threads = 8
+max_depth = 1
 
+# Built-in role overrides (recommended hub-and-spoke baseline)
+[agents.explorer]
+description = "Read-only codebase explorer for evidence gathering before edits."
+config_file = "agents/explorer.toml"
+
+[agents.worker]
+description = "Implementation-focused role for small, targeted code changes."
+config_file = "agents/worker.toml"
+
+[agents.monitor]
+description = "Long-running command/polling monitor role."
+config_file = "agents/monitor.toml"
+
+# Project-specific specialist roles
 [agents.analyst]
 description = "Pre-analysis expert. Use when requirements are vague or scope is unclear."
 config_file = "agents/analyst.toml"
@@ -74,11 +94,152 @@ config_file = "agents/security-reviewer.toml"
 description = "Documentation expert. Creates and updates README, API docs, and architecture documentation."
 config_file = "agents/doc-writer.toml"
 
-# MCP Servers (from template)
-[mcpServers.context7]
+# MCP servers
+[mcp_servers.context7]
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
 
-[mcpServers."sequential-thinking"]
+[mcp_servers."sequential-thinking"]
 command = "npx"
 args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+
+# Project skills registry (explicit paths for Codex)
+[[skills.config]]
+path = "skills/ast-refactor"
+enabled = true
+
+[[skills.config]]
+path = "skills/autonomous-loop"
+enabled = true
+
+[[skills.config]]
+path = "skills/branch-convention"
+enabled = true
+
+[[skills.config]]
+path = "skills/build-fix"
+enabled = true
+
+[[skills.config]]
+path = "skills/cancel"
+enabled = true
+
+[[skills.config]]
+path = "skills/clean-functions"
+enabled = true
+
+[[skills.config]]
+path = "skills/code-accuracy"
+enabled = true
+
+[[skills.config]]
+path = "skills/code-review"
+enabled = true
+
+[[skills.config]]
+path = "skills/comment-checker"
+enabled = true
+
+[[skills.config]]
+path = "skills/deep-index"
+enabled = true
+
+[[skills.config]]
+path = "skills/deep-search"
+enabled = true
+
+[[skills.config]]
+path = "skills/design-principles"
+enabled = true
+
+[[skills.config]]
+path = "skills/doctor"
+enabled = true
+
+[[skills.config]]
+path = "skills/documentation"
+enabled = true
+
+[[skills.config]]
+path = "skills/ecomode"
+enabled = true
+
+[[skills.config]]
+path = "skills/evolve"
+enabled = true
+
+[[skills.config]]
+path = "skills/git-commit"
+enabled = true
+
+[[skills.config]]
+path = "skills/help"
+enabled = true
+
+[[skills.config]]
+path = "skills/learner"
+enabled = true
+
+[[skills.config]]
+path = "skills/lsp"
+enabled = true
+
+[[skills.config]]
+path = "skills/merge-request"
+enabled = true
+
+[[skills.config]]
+path = "skills/mermaid"
+enabled = true
+
+[[skills.config]]
+path = "skills/note"
+enabled = true
+
+[[skills.config]]
+path = "skills/notify-user"
+enabled = true
+
+[[skills.config]]
+path = "skills/planning"
+enabled = true
+
+[[skills.config]]
+path = "skills/prd"
+enabled = true
+
+[[skills.config]]
+path = "skills/ralplan"
+enabled = true
+
+[[skills.config]]
+path = "skills/refactoring"
+enabled = true
+
+[[skills.config]]
+path = "skills/research"
+enabled = true
+
+[[skills.config]]
+path = "skills/reverse-engineering"
+enabled = true
+
+[[skills.config]]
+path = "skills/security-review"
+enabled = true
+
+[[skills.config]]
+path = "skills/setup"
+enabled = true
+
+[[skills.config]]
+path = "skills/solid"
+enabled = true
+
+[[skills.config]]
+path = "skills/tdd"
+enabled = true
+
+[[skills.config]]
+path = "skills/verify-loop"
+enabled = true

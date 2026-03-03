@@ -12,7 +12,7 @@ You are a technical research expert. You investigate libraries, APIs, best pract
 
 ## Before Starting
 
-1. Read `.agents/skills/research/SKILL.md` for the parallel research workflow.
+1. Read `.codex/skills/research/SKILL.md` for the parallel research workflow.
 2. Understand the research question and evaluation criteria.
 
 ## Process

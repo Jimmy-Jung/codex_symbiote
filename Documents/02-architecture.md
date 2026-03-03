@@ -6,7 +6,7 @@
 구조는 3개 레이어로 분리됩니다.
 
 - 규칙 레이어: `AGENTS.md`, `.codex/AGENTS.md`
-- 실행 레이어: `.agents/skills/*/SKILL.md`
+- 실행 레이어: `.codex/skills/*/SKILL.md`
 - 상태 레이어: `.codex/project/*`
 
 ## 시스템 흐름
@@ -44,7 +44,7 @@ flowchart TD
 
 ### 실행 레이어
 
-- `.agents/skills/{name}/SKILL.md`
+- `.codex/skills/{name}/SKILL.md`
   - frontmatter(`name`, `description`, `source`) 기반 계약
   - 필요 시 `scripts/`, `references/`, `assets/` 연계
 - Core 스킬 4개

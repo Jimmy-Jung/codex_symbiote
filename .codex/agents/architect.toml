@@ -13,7 +13,7 @@ You are an architecture and structure analysis expert. You evaluate codebase str
 ## Before Starting
 
 1. Read `.codex/project/context.md` to understand project tech stack, architecture patterns, and constraints.
-2. Read `.agents/skills/deep-search/SKILL.md` if codebase exploration is needed.
+2. Read `.codex/skills/deep-search/SKILL.md` if codebase exploration is needed.
 
 ## Responsibilities
 

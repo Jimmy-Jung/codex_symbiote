@@ -1,119 +1,81 @@
-# Synapse — Universal Agent Orchestrator for Codex CLI
+# Synapse — Codex Instruction Architecture Template
 
-이 문서는 실제 파일 기준으로 작성되었습니다.  
-근거 파일: `AGENTS.md`, `.codex/AGENTS.md`, `.codex/docs/codex-reference.md`, `.agents/skills/setup/SKILL.md`, `.codex/project/manifest.json.template`, `.codex/project/VERSION`
+이 저장소는 앱 코드가 아니라, 프로젝트에 삽입해서 사용하는 Codex 지시/설정 템플릿입니다.
 
-## 1. 프로젝트 개요
+## 1. 핵심 구조
 
-Synapse는 Codex CLI에서 역할 기반 오케스트레이션을 수행하는 프로젝트 규칙 세트입니다.  
-사용자 요청을 분석해 적절한 역할과 스킬을 선택하고, `AGENTS.md`에 정의된 워크플로우를 따라 작업을 진행합니다.
+- `AGENTS.md`
+  - 저장소 공통 지시(워크플로우, 안전 규칙, 멀티에이전트 운영 원칙)
+- `.codex/AGENTS.md`
+  - `.codex` 하위 파일 수정 규칙
+- `.codex/config.toml`
+  - 프로젝트 스코프 Codex 설정 (`features`, `agents`, `mcp_servers`)
+- `.codex/agents/*.toml`
+  - 역할별 에이전트 설정
+- `.codex/skills/*/SKILL.md`
+  - 스킬별 상세 실행 지침
 
-현재 저장소는 코드 애플리케이션이 아니라 `.codex` 설정/스킬 중심 템플릿입니다.
+## 2. 공식 권장 아키텍처 반영 사항
 
-## 2. 저장소 구성 요약
+- AGENTS 레이어링(글로벌 → 루트 → 하위 디렉터리)
+- 역할 기반 멀티에이전트(hub-and-spoke) 구성
+- 최신 config 스키마 키 사용:
+  - `[mcp_servers.<name>]`
+  - `[agents] max_threads/max_depth`
+  - `[features] multi_agent = true`
+- 구식 표기 제거:
+  - `mcpServers`
+  - `codex features enable multi_agent`
+  - `approval_policy = "on-failure"`
 
-- `AGENTS.md`: 루트 오케스트레이터 규칙
-- `.codex/AGENTS.md`: `.codex` 디렉터리 메타 지시사항
-- `.agents/skills/*/SKILL.md`: 스킬 정의
-- `.codex/docs/codex-reference.md`: Codex CLI 레퍼런스 요약
-- `.codex/project/manifest.json.template`: 프로젝트 매니페스트 템플릿
-- `.codex/project/VERSION`: 커널 버전
-
-## 3. 빠른 시작 링크
+## 3. 빠른 시작
 
 Quick Start 문서: [`Documents/QUICK-START.md`](./Documents/QUICK-START.md)
 
-### Codex CLI 멀티에이전트 활성화
-
-이 프로젝트는 Codex CLI의 실험적 멀티에이전트 기능을 지원합니다.
-
-활성화 방법:
+### 3.1 프로젝트 신뢰 설정
 
 ```bash
-# 1. 멀티에이전트 기능 활성화
-codex features enable multi_agent
-# 재시작 필요
-
-# 2. 프로젝트 trust 설정
 codex trust /path/to/codex_symbiote
-
-# 3. trust 확인
 codex trust --list
 ```
 
-자세한 내용: [`.codex/docs/agents-migration.md`](./.codex/docs/agents-migration.md)
+### 3.2 멀티에이전트 활성화
 
-### Codex CLI Rules 적용
-
-보안 정책은 `.codex/rules/`로 관리됩니다.
+이 템플릿은 `.codex/config.toml`에 이미 `multi_agent = true`를 포함합니다.
+CLI에서 일회성으로 켜려면 아래 명령을 사용할 수 있습니다.
 
 ```bash
-# Rules 파일 확인
-ls -1 .codex/rules/
-
-# 특정 명령어 테스트
-codex execpolicy check --pretty \
-  --rules .codex/rules/git.rules \
-  -- git push --force
+codex --enable multi_agent
 ```
 
-프로젝트 Rules 정책:
-- **git.rules**: Git 워크플로우 제약 (force push, hard reset, clean, interactive 명령어)
-- **filesystem.rules**: 파일 시스템 보안 (system directory 삭제, 과도한 권한 부여)
-- **security.rules**: 일반 보안 정책 (sudo, remote script 실행)
+참고: 멀티에이전트는 실험적 기능입니다.
 
-자세한 내용: [`.codex/docs/rules-guide.md`](./.codex/docs/rules-guide.md)
+### 3.3 지시 로드 확인
 
-## 4. 초기화 전/후 상태 설명
+```bash
+codex --ask-for-approval never "Summarize the current instructions."
+codex --cd .codex --ask-for-approval never "Show which instruction files are active."
+```
 
-초기 상태 예시(setup 전):
+## 4. Bootstrap 상태
+
+초기 상태(setup 전) 예시:
 - `.codex/project/manifest.json`: 없음
 - `.codex/project/context.md`: 없음
 
-초기화 후(목표 상태):
-- `setup` 스킬 실행을 통해 `.codex/project/manifest.json` 생성
-- `setup` 스킬 실행을 통해 `.codex/project/context.md` 생성
+초기화 후 목표 상태:
+- `setup` 스킬 실행으로 `manifest.json`, `context.md` 생성
 
-현재 상태 확인 명령:
+확인 명령:
 
 ```bash
 test -f .codex/project/manifest.json && echo "manifest.json: OK" || echo "manifest.json: MISSING"
 test -f .codex/project/context.md && echo "context.md: OK" || echo "context.md: MISSING"
 ```
 
-Bootstrap 관점에서 `AGENTS.md`는 세션 시작 시 `manifest.json` 존재 여부를 확인하며, 없으면 setup 실행을 안내하도록 정의되어 있습니다.
+## 5. 참고 문서
 
-## 5. 주요 워크플로우 진입 키워드 요약
-
-아래 키워드는 `AGENTS.md`의 Mode Detection 표 기준입니다.
-
-| 키워드 패턴 | 활성화 모드 |
-|---|---|
-| "끝까지", "완료할 때까지", "멈추지 마", "must complete" | Ralph Mode |
-| "심층 분석", "깊이 파악", "deep search" | Deep Analysis |
-| "보안 포함", "보안 검토", "security review" | Security Mode |
-| "테스트까지", "test included", "tdd", "test first" | QA/TDD Mode |
-| "문서화까지", "with docs" | Doc Mode |
-| "최대 성능", "병렬로", "autopilot", "ulw" | Autopilot |
-| "절약", "eco", "budget", "효율적으로" | Ecomode |
-| "요구사항 정리", "PRD" | PRD Mode |
-| "인덱싱", "코드베이스 파악" | Index Mode |
-| "조사", "research", "리서치" | Research Mode |
-| "기획 합의", "ralplan" | Ralplan Mode |
-| "빌드 수정", "build fix" | Build Fix |
-| "아키텍처", "구조 분석", "모듈 경계" | Architecture |
-| "UI 분석", "디자인 리뷰", "접근성" | Design |
-| "마이그레이션", "업그레이드", "migrate" | Migration |
-| "스크린샷 분석", "목업", "visual" | Vision |
-| "QA", "테스트 검증", "커버리지" | QA Mode |
-| "취소", "cancel", "중단" | Cancel |
-| "도움말", "help", "사용법" | Help |
-
-## 6. 참고 문서 링크
-
-- 루트 오케스트레이터 규칙: [`AGENTS.md`](./AGENTS.md)
-- `.codex` 메타 규칙: [`.codex/AGENTS.md`](./.codex/AGENTS.md)
-- Codex CLI 레퍼런스: [`.codex/docs/codex-reference.md`](./.codex/docs/codex-reference.md)
-- setup 스킬 정의: [`.agents/skills/setup/SKILL.md`](./.agents/skills/setup/SKILL.md)
-- manifest 템플릿: [`.codex/project/manifest.json.template`](./.codex/project/manifest.json.template)
-- 커널 버전: [`.codex/project/VERSION`](./.codex/project/VERSION)
+- 루트 지시: [`AGENTS.md`](./AGENTS.md)
+- `.codex` 스코프 지시: [`.codex/AGENTS.md`](./.codex/AGENTS.md)
+- Codex 레퍼런스 노트: [`.codex/docs/codex-reference.md`](./.codex/docs/codex-reference.md)
+- 에이전트 마이그레이션 메모: [`.codex/docs/agents-migration.md`](./.codex/docs/agents-migration.md)

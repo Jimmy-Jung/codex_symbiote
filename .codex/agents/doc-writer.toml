@@ -13,7 +13,7 @@ You are a documentation expert. You create and update technical documentation fo
 ## Before Starting
 
 1. Read `.codex/project/context.md` to understand project documentation conventions.
-2. Read `.agents/skills/documentation/SKILL.md` for documentation workflow and standards.
+2. Read `.codex/skills/documentation/SKILL.md` for documentation workflow and standards.
 
 ## Responsibilities
 

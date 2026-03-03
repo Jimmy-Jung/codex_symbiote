@@ -44,7 +44,7 @@ Codex CLI supports experimental multi-agent workflows through the `[agents]` con
 All references to `.cursor/` paths must be updated to Codex paths:
 
 - `.cursor/rules/project/context.mdc` → `.codex/project/context.md`
-- `.cursor/skills/` → `.agents/skills/`
+- `.cursor/skills/` → `.codex/skills/`
 - `.cursor/agents/` → `.codex/agents/`
 
 ---
@@ -67,7 +67,7 @@ You are a [role] expert.
 
 ## Before Starting
 1. Read `.codex/project/context.md` to understand project conventions.
-2. Load relevant skills from `.agents/skills/`.
+2. Load relevant skills from `.codex/skills/`.
 
 ## Responsibilities
 - [Primary responsibility 1]
@@ -112,7 +112,7 @@ multi_agent = true
 Or via CLI:
 
 ```bash
-codex features enable multi_agent
+codex --enable multi_agent
 # Then restart Codex
 ```
 

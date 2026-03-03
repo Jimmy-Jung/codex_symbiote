@@ -12,10 +12,10 @@ You are a strategic planning expert. You create implementation plans from requir
 
 ## Before Starting
 
-1. Read `.agents/skills/planning/SKILL.md` for planning principles.
-2. Read `.agents/skills/code-accuracy/SKILL.md` for code conventions.
+1. Read `.codex/skills/planning/SKILL.md` for planning principles.
+2. Read `.codex/skills/code-accuracy/SKILL.md` for code conventions.
 3. Read `.codex/project/context.md` for project-specific conventions, architecture, and constraints.
-4. Read `.agents/skills/note/SKILL.md` for state management and notepad usage.
+4. Read `.codex/skills/note/SKILL.md` for state management and notepad usage.
 
 ## Process
 

@@ -1,172 +1,70 @@
-# .codex Directory — 메타 지시사항
+# .codex Scope Instructions
 
 > Author: jimmy
 > Date: 2026-02-23
-> Last Updated: 2026-02-23
+> Last Updated: 2026-03-03
 
-이 디렉터리는 Codex CLI용 프로젝트 설정을 포함합니다.
-루트 `AGENTS.md`에 정의된 Synapse 오케스트레이터가 이 디렉터리의 리소스를 참조합니다.
+이 파일은 `.codex/` 디렉터리 작업에만 적용되는 보조 지시입니다.
+루트 `AGENTS.md`의 공통 규칙 위에, Codex 설정/역할 파일 관리 규칙을 추가합니다.
 
-## 디렉터리 구조
+## 1) 디렉터리 책임
 
-프로젝트 루트의 `AGENTS.md`에 Synapse 오케스트레이션, Mode Detection, Agent Roles, Workflows가 정의되어 있습니다.
+- `config.toml`: 프로젝트 스코프 Codex 설정
+- `agents/*.toml`: 멀티에이전트 역할별 구성
+- `rules/*.rules`: 실행 정책
+- `project/*`: 런타임 상태/컨텍스트
+- `docs/*`: 운영 문서
 
-```
-.codex/
-├── AGENTS.md                  # 이 파일 (메타 지시사항)
-├── config.toml                # Codex CLI 프로젝트 설정 (멀티에이전트, 에이전트 정의)
-├── config.toml.template       # 설정 템플릿
-├── agents/                    # Agent 역할별 TOML 정의 (16개)
-│   ├── analyst.toml           # Phase 0: 사전 분석
-│   ├── planner.toml           # Phase 1: 전략 기획
-│   ├── critic.toml            # Phase 1: 계획 검증
-│   ├── implementer.toml       # Phase 2: 코드 구현
-│   ├── reviewer.toml          # Phase 3: 코드 리뷰
-│   ├── debugger.toml          # Phase 2: 디버깅
-│   ├── build-fixer.toml       # Phase 2: 빌드 오류 수정
-│   ├── researcher.toml        # Phase 0: 기술 리서치
-│   ├── vision.toml            # Phase 0: 시각 분석
-│   ├── architect.toml         # Phase 1: 아키텍처 분석
-│   ├── designer.toml          # Phase 1: UI/UX 분석
-│   ├── migrator.toml          # Phase 2: 마이그레이션
-│   ├── tdd-guide.toml         # Phase 2: TDD 가이드
-│   ├── qa-tester.toml         # Phase 3: QA 검증
-│   ├── security-reviewer.toml # Phase 3: 보안 검토
-│   └── doc-writer.toml        # Phase 3: 문서화
-├── rules/                     # 명령어 실행 정책 (3개)
-│   ├── README.md              # Rules 가이드
-│   ├── git.rules              # Git 워크플로우 제약
-│   ├── filesystem.rules       # 파일시스템 보안
-│   └── security.rules         # 일반 보안 정책
-├── project/                   # 프로젝트 런타임 데이터
-│   ├── context.md             # 프로젝트 컨텍스트 (setup 후 생성)
-│   └── state/                 # 작업별 상태 폴더 (Ralph Loop, Autopilot)
-│       └── {ISO8601}_{task}/  # 타임스탬프 + 작업명
-│           ├── notepad.md     # 진행 상태, 결정 사항
-│           └── ralph-state.md # Ralph Loop 상태 (있는 경우)
-└── docs/                      # 프로젝트 문서 (5개)
-    ├── codex-reference.md     # Codex CLI 스펙 요약
-    ├── agents-migration.md    # 에이전트 마이그레이션 가이드
-    ├── rules-guide.md         # Rules 작성 가이드
-    ├── testing-guide.md       # 테스트 가이드
-    └── analysis-codex-official-compliance.md  # 공식 스펙 준수 분석
+## 2) config.toml 작성 규칙
 
-# 참고: 스킬은 프로젝트 루트의 `.agents/skills/` 디렉터리에 위치 (35개)
-```
+공식 키만 사용합니다.
 
-## 에이전트 사용법
+- MCP: `[mcp_servers.<name>]` (camelCase `mcpServers` 금지)
+- 멀티에이전트: `[features] multi_agent = true`
+- 역할 제한: `[agents] max_threads`, `max_depth`
+- 역할 등록: `[agents.<name>] description`, `config_file`
 
-Codex CLI에서 멀티에이전트를 사용하려면:
+권장:
+- deprecated 키(`on-failure`, `mcpServers`, legacy web_search 토글) 사용 금지
+- 프로젝트별 설정은 루트 대비 최소 오버라이드만 유지
 
-1. 기능 활성화 및 프로젝트 신뢰:
-   ```bash
-   codex features enable multi_agent  # 재시작 필요
-   codex trust /path/to/codex_symbiote
-   ```
+## 3) agent role 파일 규칙 (`.codex/agents/*.toml`)
 
-2. 자연어로 작업 요청:
-   - Synapse 오케스트레이터가 작업 복잡도를 판단하여 적절한 역할로 전환
-   - 예: "사용자 인증 시스템을 구현해줘" → Planner → Implementer → Reviewer
+- 역할은 단일 책임으로 설계
+- `developer_instructions` 중심으로 역할 행동 정의
+- 필요 시 `model`, `model_reasoning_effort`, `sandbox_mode`만 명시
+- 불필요한 광범위 지시, 중복 지시 금지
 
-3. 멀티에이전트 병렬 실행 (활성화 시):
-   - Phase 0: Analyst + Researcher 병렬
-   - Phase 3: Reviewer + Security-Reviewer + QA-Tester 병렬
+역할 분류 권장:
+- 탐색 전용(read-only): `explorer`, `reviewer`, `researcher`
+- 실행 전용(write): `worker`, `implementer`, `build-fixer`
+- 모니터링 전용: `monitor`
 
-4. 에이전트 설정 참조:
-   - 전역 설정: `.codex/config.toml`의 `[agents]` 섹션
-   - 역할별 지시사항: `.codex/agents/{role}.toml`
+## 4) 문서 동기화 규칙
 
-## 스킬 사용법
+다음 항목은 항상 최신 상태로 맞춥니다.
 
-Codex CLI에서 스킬을 사용하려면:
-1. 자연어로 작업을 요청하면 Synapse 오케스트레이터가 관련 스킬을 자동 참조
-2. 직접 스킬을 참조: "code-accuracy 스킬을 적용해서 검증해줘"
-3. 스킬 파일 직접 참조: `.agents/skills/{name}/SKILL.md`
+- `README.md`의 멀티에이전트 활성화 방법
+- `.codex/docs/*`의 config 키 이름과 CLI 명령
+- 루트 `AGENTS.md`와 `.codex/AGENTS.md`의 용어 일관성
 
-## 스킬 포맷
+## 5) 검증 커맨드
 
-각 스킬은 `SKILL.md` 파일로 구성됩니다:
+설정 변경 후 최소 검증:
 
-```yaml
----
-name: skill-name
-description: 스킬 설명. Use when ...
-source: origin | system | custom
----
+```bash
+# 지시 파일 로드 상태 점검
+codex --ask-for-approval never "Summarize the current instructions."
 
-# 스킬 제목
+# 하위 디렉터리 스코프 점검
+codex --cd .codex --ask-for-approval never "Show which instruction files are active."
 
-상세 지시사항...
+# 규칙 파일 샘플 검증
+codex execpolicy check --pretty --rules .codex/rules/git.rules -- git push --force origin main
 ```
 
-## Rules 사용법
+## 6) 금지/주의
 
-명령어 실행 정책은 `.codex/rules/*.rules` 파일로 관리됩니다:
-
-1. 정책 확인:
-   ```bash
-   codex execpolicy check --pretty \
-     --rules .codex/rules/git.rules \
-     -- git push --force origin main
-   ```
-
-2. 정책 종류:
-   - `forbidden`: 절대 차단 (예: `rm -rf /`, `curl | bash`)
-   - `prompt`: 승인 필요 (예: `git push --force`, `git reset --hard`)
-
-3. 커스텀 정책 추가:
-   - `.codex/rules/README.md` 참조하여 새 `.rules` 파일 작성
-   - `.codex/config.toml`의 `[execpolicy]` 섹션에 경로 추가
-
-## 파일 포맷
-
-### Agent TOML 포맷
-
-```toml
-name = "role-name"
-model = "auto"  # fast, sonnet, opus, auto
-instructions = """
-역할별 상세 지시사항...
-"""
-```
-
-### Skill YAML Frontmatter
-
-```yaml
----
-name: skill-name
-description: Use when ...
-source: origin  # origin (프로젝트), system (전역), custom
----
-```
-
-### Rules 포맷
-
-```
-# 정책 설명
-pattern: 명령어 패턴 (regex)
-action: forbidden | prompt
-message: 사용자에게 표시할 메시지
-```
-
-## .codex 파일 수정 시 규칙
-
-1. Agent TOML 수정 시:
-   - `name` 필드는 파일명과 일치해야 함
-   - `instructions`는 간결하게 (500줄 이하 권장)
-   - `.codex/config.toml`의 `[agents]` 섹션에 등록
-
-2. Skill SKILL.md 수정 시:
-   - YAML frontmatter의 `name`과 `description` 유지
-   - 500줄 이하로 유지
-   - `source` 필드로 출처 명시
-
-3. Rules 수정 시:
-   - `.codex/rules/README.md` 가이드 준수
-   - `codex execpolicy check`로 테스트 후 적용
-
-4. 경로 규칙:
-   - 스킬은 `.agents/skills/` 경로 사용
-   - `.cursor/` 경로 사용 금지
-   - 프로젝트 컨텍스트 참조는 `.codex/project/context.md`
-   - 에이전트 참조는 루트 `AGENTS.md`의 Agent Roles 섹션
+- `.cursor/*` 경로를 신규 표준으로 사용하지 않음
+- 문서에 구식 명령을 기본 절차처럼 남기지 않음
+- 근거 없이 sandbox/approval를 완화하지 않음

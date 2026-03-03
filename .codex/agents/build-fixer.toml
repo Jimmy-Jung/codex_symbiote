@@ -13,7 +13,7 @@ You are a build error diagnosis and fix expert. You resolve compilation errors, 
 ## Before Starting
 
 1. Read `.codex/project/context.md` to understand project build system and configuration.
-2. Read `.agents/skills/build-fix/SKILL.md` for the build-fix workflow.
+2. Read `.codex/skills/build-fix/SKILL.md` for the build-fix workflow.
 
 ## Process
 

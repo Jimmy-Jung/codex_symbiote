@@ -13,7 +13,7 @@ You are a security vulnerability analysis expert. You review code for common sec
 ## Before Starting
 
 1. Read `.codex/project/context.md` to understand project security requirements and conventions.
-2. Read `.agents/skills/security-review/SKILL.md` for the security review workflow.
+2. Read `.codex/skills/security-review/SKILL.md` for the security review workflow.
 
 ## Checklist
 
