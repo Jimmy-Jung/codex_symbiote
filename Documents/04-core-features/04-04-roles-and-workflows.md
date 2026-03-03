@@ -6,13 +6,14 @@
 
 ## 역할 맵 (Agent Roles)
 
-총 15개 역할이 정의되어 있습니다.
+총 19개 역할이 정의되어 있습니다.
 
 | Phase | 역할 |
 |---|---|
+| Core | Explorer, Worker, Monitor |
 | Phase 0 | Analyst, Researcher, Vision |
 | Phase 1 | Planner, Critic, Architect, Designer |
-| Phase 2 | Implementer, Debugger, Migrator, TDD-Guide |
+| Phase 2 | Implementer, Build-Fixer, Debugger, Migrator, TDD-Guide |
 | Phase 3 | Reviewer, QA-Tester, Security-Reviewer, Doc-Writer |
 
 ## 워크플로우 맵 (Workflows)

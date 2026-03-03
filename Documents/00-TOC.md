@@ -19,7 +19,7 @@
 | 04-01 | [Bootstrap/Setup](./04-core-features/04-01-bootstrap-setup.md) | 초기화 및 생성 산출물 | 2 |
 | 04-02 | [Mode Detection](./04-core-features/04-02-mode-detection-workflow.md) | 자연어 트리거 라우팅 | 2 |
 | 04-03 | [Skill System](./04-core-features/04-03-skill-system.md) | SKILL.md 계약과 품질 기준 | 2 |
-| 04-04 | [Roles & Workflows](./04-core-features/04-04-roles-and-workflows.md) | 15개 역할과 10개 워크플로우 | 3 |
+| 04-04 | [Roles & Workflows](./04-core-features/04-04-roles-and-workflows.md) | 19개 역할과 10개 워크플로우 | 3 |
 | 05 | [데이터 흐름](./05-data-flow.md) | 요청/상태/검증 흐름 | 2 |
 | 06 | [의존성](./06-dependencies.md) | 외부 도구와 내부 의존 관계 | 2 |
 | 07 | [빌드/운영](./07-build-deploy.md) | 검증 루틴, 운영 체크리스트 | 1 |
@@ -38,7 +38,7 @@
 - 저장소 성격: Codex CLI 오케스트레이션 템플릿
 - 핵심 진입점: `AGENTS.md`
 - 스킬 수: 35개 (`.codex/skills/*` 디렉터리 기준)
-- 역할 수: 15개 (`AGENTS.md` Agent Roles 섹션 기준)
+- 역할 수: 19개 (`.codex/config.toml`의 `[agents.<name>]` 기준)
 - 워크플로우 수: 10개 (`AGENTS.md` Workflows 섹션 기준)
 - setup 산출물(`manifest.json`, `context.md`): 아직 미생성
 
