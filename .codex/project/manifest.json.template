@@ -50,6 +50,7 @@
       {"path": "skills/branch-convention", "source": "origin"},
       {"path": "skills/ast-refactor", "source": "origin"},
       {"path": "skills/design-principles", "source": "origin"},
+      {"path": "skills/oop-design", "source": "origin"},
       {"path": "skills/mermaid", "source": "origin"},
       {"path": "skills/lsp", "source": "origin"},
       {"path": "skills/prd", "source": "origin"},
