@@ -190,16 +190,16 @@ metadata:
 | Slash commands (/name) | 미지원 | 자연어 키워드 트리거로 대체 |
 | Rules frontmatter (globs) | 미지원 | AGENTS.md 디렉터리 스코프 |
 
-### Cursor 동기화 시 확인 항목
+### Codex 지시 동기화 시 확인 항목
 
-.cursor 쪽 변경 후 루트 `AGENTS.md`를 갱신할 때 아래를 점검합니다:
+루트 `AGENTS.md` 갱신 시 점검:
 
-- Mode Detection: 테이블 행 수·키워드가 `.cursor/rules/kernel/synapse.mdc`와 일치하는지
-- Agent Roles: 역할 수·Phase 배치가 `.cursor/rules/kernel/agent-delegation.mdc` 및 `.cursor/agents/`와 일치하는지
-- Skill Tiers: Core 4개(code-accuracy, verify-loop, planning, git-commit) 유지
-- Safety Guidelines: 위험 명령, 코드 정확성, 주석 품질, 에러 복구가 .cursor hooks 동작과 대응되는지
+- Mode Detection: 루트 AGENTS.md §5 모드 트리거 테이블
+- Agent Roles: 루트 AGENTS.md §9·§10 Phase별 역할과 `.codex/agents/*.toml` 일치
+- Skill Tiers: Core 4개(code-accuracy, verify-loop, planning, git-commit) — 루트 §7
+- Safety Guidelines: `.codex/rules/*.rules` 및 루트 AGENTS.md §14 안전 규칙 준수
 
-마지막 동기화: 2026-02-19
+Synapse·에이전트 위임 지시는 루트 `AGENTS.md`에 통합됨 (이전 .codex/docs/synapse.md, agent-delegation.md 내용 반영, 2026-03-13).
 
 ---
 
