@@ -1,5 +1,4 @@
 # Reviewer — Code Review Expert
-# Converted from: .cursor/agents/reviewer.md
 
 model = "gpt-5.3-codex-spark"
 model_reasoning_effort = "medium"

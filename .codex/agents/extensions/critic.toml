@@ -1,5 +1,4 @@
 # Critic (Momus) — Critical Plan Review Expert
-# Converted from: .cursor/agents/critic.md
 
 model = "gpt-5.3-codex-spark"
 model_reasoning_effort = "medium"

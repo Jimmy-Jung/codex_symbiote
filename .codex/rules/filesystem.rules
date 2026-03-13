@@ -1,5 +1,4 @@
 # Filesystem Security Rules
-# Converted from: .cursor/hooks/guard-shell.sh
 #
 # Purpose: Prevent destructive filesystem operations.
 # All rules use decision="forbidden" to completely block dangerous commands.

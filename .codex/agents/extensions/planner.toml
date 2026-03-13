@@ -1,5 +1,4 @@
 # Planner (Prometheus) — Strategic Planning Expert
-# Converted from: .cursor/agents/planner.md
 
 # Model inherits from parent (not specified)
 model_reasoning_effort = "medium"

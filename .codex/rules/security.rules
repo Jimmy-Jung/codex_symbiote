@@ -1,5 +1,4 @@
 # Security Rules
-# Converted from: .cursor/hooks/guard-shell.sh
 #
 # Purpose: Block security-sensitive operations (sudo filesystem changes, remote script execution).
 # All rules use decision="forbidden" to completely block dangerous commands.

@@ -1,17 +1,20 @@
 # QUICK-START
 
+> 참고: 이 문서는 현재 최소 템플릿 기준으로 갱신되었습니다.
+
 ## 1. 목표
 
-5분 내 아래 초기화 산출물을 생성하고 확인합니다.
+5분 내 현재 기본 템플릿 구조를 확인합니다.
 
-- `.codex/project/manifest.json`
-- `.codex/project/context.md`
+- `AGENTS.md`
+- `.codex/AGENTS.md`
+- `.codex/config.toml`
+- `.codex/agents/` 기본 역할 4개
 
 ## 2. 사전 확인
 
 - Codex CLI 실행 가능
 - 저장소 루트 접근 가능
-- 기준 문서: `AGENTS.md`, `.codex/skills/setup/SKILL.md`
 - 프로젝트용 `.codex/config.toml` 적용 시 Codex trust 필요
 
 ## 3. 실행 절차
@@ -22,56 +25,33 @@
 cd /path/to/codex_symbiote
 ```
 
-2. Codex 실행
+2. trust 확인
 
 ```bash
-codex
+codex trust /path/to/codex_symbiote
+codex trust --list
 ```
 
-3. setup 요청
-
-```text
-setup 스킬을 실행해줘
-```
-
-4. 산출물 확인
+3. 기본 역할 파일 확인
 
 ```bash
-test -f .codex/project/manifest.json && echo "manifest.json: OK" || echo "manifest.json: MISSING"
-test -f .codex/project/context.md && echo "context.md: OK" || echo "context.md: MISSING"
+find .codex/agents -maxdepth 1 -type f | sort
 ```
 
-5. 구조 진단(권장)
+4. config 문법 확인
 
 ```bash
-bash .codex/skills/doctor/scripts/validate.sh
+python3 -c "import tomllib, pathlib; tomllib.loads(pathlib.Path('.codex/config.toml').read_text()); print('config ok')"
 ```
 
 ## 4. 성공 기준
 
-- `manifest.json`이 생성됨
-- `context.md`가 생성됨
-- doctor 실행 시 FAIL이 없음
+- 기본 역할 4개가 존재
+- `.codex/config.toml`이 파싱 가능
+- 최소 템플릿 문서와 실제 구조가 일치
 
-## 5. 자주 발생하는 문제
-
-### `codex: command not found`
-
-- Codex CLI 설치/PATH 상태 확인
-- 새 터미널에서 재실행
-
-### setup 실행 후 파일 미생성
-
-- 현재 위치가 저장소 루트인지 확인
-- setup 로그의 오류 확인 후 재시도
-
-### doctor에서 `jq` 관련 오류
-
-- `jq` 설치 후 재실행
-- macOS 예시: `brew install jq`
-
-## 6. 다음 문서
+## 5. 다음 문서
 
 1. [문서 목차](./00-TOC.md)
-2. [아키텍처](./02-architecture.md)
+2. [프로젝트 개요](./01-project-overview.md)
 3. [온보딩](./08-onboarding.md)

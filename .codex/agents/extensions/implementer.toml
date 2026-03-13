@@ -1,5 +1,4 @@
 # Implementer (Executor) — Implementation Expert
-# Converted from: .cursor/agents/implementer.md
 
 # Model inherits from parent (not specified)
 model_reasoning_effort = "medium"

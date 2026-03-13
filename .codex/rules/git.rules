@@ -1,5 +1,4 @@
 # Git Workflow Rules
-# Converted from: .cursor/hooks/guard-shell.sh
 #
 # Purpose: Protect Git workflow from destructive operations and unsupported interactive commands.
 # Decision strategy:

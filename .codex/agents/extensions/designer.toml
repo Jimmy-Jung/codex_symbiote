@@ -1,5 +1,4 @@
 # Designer — UI/UX Analysis Expert
-# Converted from: .cursor/agents/designer.md
 
 model = "gpt-5.3-codex-spark"
 model_reasoning_effort = "medium"

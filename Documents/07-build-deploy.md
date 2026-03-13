@@ -2,51 +2,30 @@
 
 ## 개요
 
-이 저장소는 앱 빌드/배포 파이프라인이 아니라,
-`.codex` 설정의 무결성과 문서/스킬 정합성을 운영하는 저장소입니다.
+이 저장소는 앱 빌드/배포보다 지침과 설정의 무결성 관리가 중심입니다.
 
 ## 기본 검증 루틴
 
-1. doctor 실행
+1. config 파싱 확인
 
 ```bash
-bash .codex/skills/doctor/scripts/validate.sh
+python3 -c "import tomllib, pathlib; tomllib.loads(pathlib.Path('.codex/config.toml').read_text()); print('config ok')"
 ```
 
-2. 스킬 수 검증
+2. 기본 역할 확인
 
 ```bash
-find .codex/skills -mindepth 1 -maxdepth 1 -type d | wc -l
+find .codex/agents -maxdepth 1 -type f | sort
 ```
 
-3. setup 산출물 확인
+3. 문서 기준 확인
 
-```bash
-test -f .codex/project/manifest.json && echo "manifest: OK" || echo "manifest: MISSING"
-test -f .codex/project/context.md && echo "context: OK" || echo "context: MISSING"
-```
+- `AGENTS.md`
+- `.codex/AGENTS.md`
+- `.codex/docs/minimal-template-guide.md`
 
 ## 운영 체크리스트
 
-- AGENTS 변경 시
-  - Mode Detection 키워드와 실제 스킬 매핑 일치 확인
-  - 역할/워크플로우 설명과 실제 스킬 경로 일치 확인
-- 스킬 변경 시
-  - `name`, `description`, `source` frontmatter 확인
-  - doctor로 경로/교차 참조 검증
-- 문서 변경 시
-  - 문서의 수치/경로를 명령으로 재검증
-  - setup 전/후 상태를 구분해서 기술
-
-## 배포 정책
-
-- CI/CD 배포 파이프라인: 현재 없음
-- 운영 단위: Git 커밋 + doctor/수동 검증
-- 릴리즈 아티팩트: 별도 없음
-
-## 추천 점검 순서
-
-1. 문서 또는 스킬 수정
-2. doctor 실행
-3. 링크/경로 검증
-4. 커밋
+- 기본 역할과 config 등록이 일치하는지 확인
+- 확장 역할이 기본 동작처럼 서술되지 않는지 확인
+- 선택형 setup 파일이 필수 전제처럼 쓰이지 않는지 확인

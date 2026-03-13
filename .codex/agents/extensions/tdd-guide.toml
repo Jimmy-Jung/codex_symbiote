@@ -1,5 +1,4 @@
 # TDD Guide — Test-Driven Development Expert
-# Converted from: .cursor/agents/tdd-guide.md
 
 # Model inherits from parent (not specified)
 model_reasoning_effort = "medium"

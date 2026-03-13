@@ -2,20 +2,12 @@
 
 # Codex CLI configuration for this repository.
 # Project-scoped settings are loaded only when the project is trusted.
-# Trust command: codex trust /path/to/codex_symbiote
 
-# Keep enough budget for layered AGENTS instructions.
 project_doc_max_bytes = 65536
 
 [features]
-# Experimental feature: enables spawn_agent/send_input/resume_agent/wait/close_agent tools.
 multi_agent = true
 
-[agents]
-# Note: codex-cli 0.104.0 does not accept max_threads/max_depth here.
-# Keep role-only definitions for CLI compatibility.
-
-# Built-in role overrides (recommended hub-and-spoke baseline)
 [agents.explorer]
 description = "Read-only codebase explorer for evidence gathering before edits."
 config_file = "agents/explorer.toml"
@@ -24,135 +16,20 @@ config_file = "agents/explorer.toml"
 description = "Implementation-focused role for small, targeted code changes."
 config_file = "agents/worker.toml"
 
+[agents.reviewer]
+description = "Code review expert focused on bugs, regressions, and missing tests."
+config_file = "agents/reviewer.toml"
+
 [agents.monitor]
 description = "Long-running command/polling monitor role."
 config_file = "agents/monitor.toml"
 
-# Project-specific specialist roles
-[agents.analyst]
-description = "Pre-analysis expert. Use when requirements are vague or scope is unclear."
-config_file = "agents/analyst.toml"
-
-[agents.planner]
-description = "Strategic planning expert. Creates implementation plans from requirements."
-config_file = "agents/planner.toml"
-
-[agents.critic]
-description = "Plan validation expert. Reviews implementation plans for completeness and risks."
-config_file = "agents/critic.toml"
-
-[agents.implementer]
-description = "Code implementation expert. Implements features following project conventions."
-config_file = "agents/implementer.toml"
-
-[agents.reviewer]
-description = "Code review expert. Reviews code quality, refactoring correctness, and pattern compliance."
-config_file = "agents/reviewer.toml"
-
-[agents."build-fixer"]
-description = "Build error diagnosis and fix expert. Resolves compilation and build issues."
-config_file = "agents/build-fixer.toml"
-
-[agents.debugger]
-description = "Debugging expert. Diagnoses and fixes bugs, memory leaks, and performance issues."
-config_file = "agents/debugger.toml"
-
-[agents.researcher]
-description = "Technical research expert. Investigates libraries, APIs, and best practices."
-config_file = "agents/researcher.toml"
-
-[agents.vision]
-description = "Visual analysis expert. Analyzes screenshots, UI mockups, and design files."
-config_file = "agents/vision.toml"
-
-[agents.architect]
-description = "Architecture analysis expert. Evaluates codebase structure and proposes architectural decisions."
-config_file = "agents/architect.toml"
-
-[agents.designer]
-description = "UI/UX design expert. Evaluates interface patterns and proposes design improvements."
-config_file = "agents/designer.toml"
-
-[agents.migrator]
-description = "Migration expert. Handles API migrations, framework upgrades, and schema changes."
-config_file = "agents/migrator.toml"
-
-[agents."tdd-guide"]
-description = "TDD workflow guide. Leads test-driven development with red-green-refactor cycle."
-config_file = "agents/tdd-guide.toml"
-
-[agents."qa-tester"]
-description = "QA expert. Validates implementation against acceptance criteria and verifies test coverage."
-config_file = "agents/qa-tester.toml"
-
-[agents."security-reviewer"]
-description = "Security expert. Reviews code for vulnerabilities, injection, XSS, and dependency issues."
-config_file = "agents/security-reviewer.toml"
-
-[agents."doc-writer"]
-description = "Documentation expert. Creates and updates README, API docs, and architecture documentation."
-config_file = "agents/doc-writer.toml"
-
-# MCP servers
 [mcp_servers.context7]
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
 
-[mcp_servers."sequential-thinking"]
-command = "npx"
-args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-
-# Project skills registry (explicit paths for Codex)
-[[skills.config]]
-path = "skills/ast-refactor"
-enabled = true
-
-[[skills.config]]
-path = "skills/autonomous-loop"
-enabled = true
-
-[[skills.config]]
-path = "skills/branch-convention"
-enabled = true
-
-[[skills.config]]
-path = "skills/build-fix"
-enabled = true
-
-[[skills.config]]
-path = "skills/cancel"
-enabled = true
-
-[[skills.config]]
-path = "skills/clean-functions"
-enabled = true
-
 [[skills.config]]
 path = "skills/code-accuracy"
-enabled = true
-
-[[skills.config]]
-path = "skills/code-review"
-enabled = true
-
-[[skills.config]]
-path = "skills/comment-checker"
-enabled = true
-
-[[skills.config]]
-path = "skills/deep-index"
-enabled = true
-
-[[skills.config]]
-path = "skills/deep-search"
-enabled = true
-
-[[skills.config]]
-path = "skills/design-principles"
-enabled = true
-
-[[skills.config]]
-path = "skills/doctor"
 enabled = true
 
 [[skills.config]]
@@ -160,83 +37,7 @@ path = "skills/documentation"
 enabled = true
 
 [[skills.config]]
-path = "skills/ecomode"
-enabled = true
-
-[[skills.config]]
-path = "skills/evolve"
-enabled = true
-
-[[skills.config]]
-path = "skills/git-commit"
-enabled = true
-
-[[skills.config]]
-path = "skills/help"
-enabled = true
-
-[[skills.config]]
-path = "skills/learner"
-enabled = true
-
-[[skills.config]]
-path = "skills/lsp"
-enabled = true
-
-[[skills.config]]
-path = "skills/merge-request"
-enabled = true
-
-[[skills.config]]
-path = "skills/mermaid"
-enabled = true
-
-[[skills.config]]
-path = "skills/note"
-enabled = true
-
-[[skills.config]]
-path = "skills/notify-user"
-enabled = true
-
-[[skills.config]]
 path = "skills/planning"
-enabled = true
-
-[[skills.config]]
-path = "skills/prd"
-enabled = true
-
-[[skills.config]]
-path = "skills/ralplan"
-enabled = true
-
-[[skills.config]]
-path = "skills/refactoring"
-enabled = true
-
-[[skills.config]]
-path = "skills/research"
-enabled = true
-
-[[skills.config]]
-path = "skills/reverse-engineering"
-enabled = true
-
-[[skills.config]]
-path = "skills/security-review"
-enabled = true
-
-[[skills.config]]
-path = "skills/setup"
-enabled = true
-
-[[skills.config]]
-path = "skills/solid"
-enabled = true
-
-[[skills.config]]
-path = "skills/tdd"
 enabled = true
 
 [[skills.config]]

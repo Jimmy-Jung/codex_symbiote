@@ -1,5 +1,4 @@
 # Migrator — Migration Expert
-# Converted from: .cursor/agents/migrator.md
 
 # Model inherits from parent (not specified)
 model_reasoning_effort = "medium"
