@@ -35,10 +35,14 @@
 - 필요 시 `model`, `model_reasoning_effort`, `sandbox_mode`만 명시
 - 불필요한 광범위 지시, 중복 지시 금지
 
-역할 분류 권장:
-- 탐색 전용(read-only): `explorer`, `reviewer`, `researcher`
-- 실행 전용(write): `worker`, `implementer`, `build-fixer`
-- 모니터링 전용: `monitor`
+Phase별 역할 요약 (상세 위임 규칙은 루트 AGENTS.md §9·§10 참조):
+- Phase 0 Analyze: analyst, researcher, vision
+- Phase 1 Plan: planner, critic, architect, designer
+- Phase 2 Execute: implementer, debugger, build-fixer, migrator, tdd-guide
+- Phase 3 Verify: reviewer, qa-tester, security-reviewer, doc-writer
+- 탐색/실행/모니터: explorer, worker, monitor
+
+역할 추가·변경 시 루트 `AGENTS.md`의 Phase별 에이전트 설명과 `.codex/agents/*.toml`을 동기화합니다.
 
 ## 4) 문서 동기화 규칙
 
