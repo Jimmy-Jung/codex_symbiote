@@ -1,0 +1,4 @@
+interface:
+  display_name: "RIBs iOS"
+  short_description: "Uber RIBs iOS 아키텍처 구현/리뷰 워크플로우"
+  default_prompt: "Review and implement iOS modules following Uber RIBs official architecture patterns."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "OOP Design"
+  short_description: "객체지향 설계/리뷰/다이어그램 워크플로우"
+  default_prompt: "Design object-oriented architecture with classDiagram and flowchart first, and use sub-agents selectively for large read-heavy analysis or risk review."

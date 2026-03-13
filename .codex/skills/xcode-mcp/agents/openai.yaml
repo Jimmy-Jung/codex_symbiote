@@ -1,0 +1,10 @@
+interface:
+  display_name: "Xcode MCP"
+  short_description: "Set up and troubleshoot Xcode MCP access"
+  default_prompt: "Use $xcode-mcp to inspect, configure, or troubleshoot Xcode MCP and `xcrun mcpbridge`."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "xcode"
+      description: "Xcode MCP server exposed through xcrun mcpbridge"
