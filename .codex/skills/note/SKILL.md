@@ -13,6 +13,9 @@ source: origin
 
 `.codex/project/state/{task-folder}/notepad.md`
 
+Task Master형 상태를 함께 사용할 때도 메모는 동일 경로를 유지합니다.
+다만 선택형 헤더 필드로 전역 task graph와 연결할 수 있습니다.
+
 task-folder 네이밍: `{ISO8601-basic}_{task-name}`
 예시: `2026-02-13T1430_login-feature`
 
@@ -43,12 +46,19 @@ task-folder 네이밍: `{ISO8601-basic}_{task-name}`
 ## 작업 컨텍스트
 - 현재 작업: [설명]
 - 목표: [설명]
+- taskId: [없으면 none]
+- tag: [없으면 master]
+- relatedTasks: [id, ...]
 
 ## 핵심 결정
 - [타임스탬프] [결정 내용]
 
 ## 발견 사항
 - [타임스탬프] [발견 내용]
+
+## Next 선택 근거
+- [타임스탬프] next 후보 비교 결과
+- 선택 사유: [dependency 충족 / priority / blocking 해소 등]
 
 ## 진행 상태
 - [x] 완료된 항목
@@ -64,12 +74,14 @@ task-folder 네이밍: `{ISO8601-basic}_{task-name}`
 1. task-folder가 없으면 Shell tool로 생성: `mkdir -p .codex/project/state/{task-folder}`
 2. `notepad.md`에 새 항목을 추가 (기존 내용 보존)
 3. 타임스탬프를 포함하여 시간순 추적 가능
+4. Task Master 연동 시 `taskId`, `tag`, `relatedTasks`를 가능한 한 유지
 
 ### 읽기 (Read)
 1. 작업 시작 시 `.codex/project/state/{task-folder}/notepad.md` 존재 여부 확인
 2. 존재하면 Read tool로 이전 컨텍스트 복원
 3. 파일이 없으면 새로 시작
 4. 현재 작업과 관련된 항목을 활용
+5. Task Master 연동 시 `Next 선택 근거`와 `relatedTasks`를 우선 참고
 
 ### 정리 (Clean)
 1. 작업 완료 시 `/clean` 커맨드로 task-folder 전체를 삭제
@@ -81,6 +93,16 @@ Ralph Loop / Autopilot의 각 iteration에서:
 - iteration 시작: notepad.md 읽어 이전 상태 복원 (없으면 새로 생성)
 - iteration 중: 발견 사항, 수정 내역 기록
 - iteration 종료: 다음 iteration을 위한 상태 기록
+
+## Task Graph 보조 입력 규칙
+
+`notepad.md`는 전역 `tasks.json`의 진실 원천이 아니다.
+다만 아래 항목은 `tm-sync`나 수동 상태 갱신의 보조 입력으로 사용할 수 있다.
+
+- 현재 막힌 원인
+- 다음에 시도할 접근
+- 관련 dependency 관찰 결과
+- `review` 또는 `blocked` 추천 사유
 
 ## 원칙
 

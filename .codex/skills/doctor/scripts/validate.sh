@@ -38,6 +38,14 @@ warn() {
   WARN_LIST+=("$1")
 }
 
+warn_setup() {
+  warn "$1"
+}
+
+warn_optional_runtime() {
+  warn "optional-runtime: $1"
+}
+
 fail() {
   FAIL=$((FAIL + 1))
   FAIL_LIST+=("$1")
@@ -214,8 +222,16 @@ check_references() {
       pass
     else
       REF_BROKEN=$((REF_BROKEN + 1))
-      warn "$label: 참조 '$ref'가 존재하지 않습니다"
-      echo "  [WARN] 깨진 참조: $label → $ref"
+      if [ "$ref" = ".codex/project/manifest.json" ] || [ "$ref" = ".codex/project/context.md" ]; then
+        warn_setup "$label: 참조 '$ref'가 존재하지 않습니다"
+        echo "  [WARN][setup] 깨진 참조: $label → $ref"
+      elif [ "$ref" = ".codex/project/taskmaster/state.json" ] || [ "$ref" = ".codex/project/taskmaster/tasks.json" ] || [ "$ref" = ".codex/project/taskmaster/config.json" ] || [ "$ref" = ".codex/project/logs/" ] || [ "$ref" = ".codex/project/codebase-index.md" ] || [ "$ref" = ".codex/project/history/v1.0-initial-setup.md" ] || [ "$ref" = ".codex/project/history/vN.M-evolution-YYYYMMDD.md" ] || [ "$ref" = ".codex/project/history/modified-origins/" ] || [ "$ref" = ".codex/skills/notify-user/.env" ] || [ "$ref" = ".codex/skills/.system/skill-creator/SKILL.md" ]; then
+        warn_optional_runtime "$label: 참조 '$ref'가 존재하지 않습니다"
+        echo "  [WARN][optional-runtime] 깨진 참조: $label → $ref"
+      else
+        warn "$label: 참조 '$ref'가 존재하지 않습니다"
+        echo "  [WARN] 깨진 참조: $label → $ref"
+      fi
     fi
   done
 }
@@ -339,6 +355,62 @@ if [ -f "$CODEX_DIR/config.toml" ]; then
   fi
   echo ""
 fi
+
+# ============================================================
+# 8. 선택형 Task Master 확장 점검
+# ============================================================
+echo "--- 8. 선택형 Task Master 확장 ---"
+
+TASKMASTER_DIR="$CODEX_DIR/project/taskmaster"
+if [ -d "$TASKMASTER_DIR" ]; then
+  echo "  [INFO] taskmaster 확장 활성"
+
+  echo "  [INFO] schema 파일 점검"
+  for file in tasks.schema.json state.schema.json config.schema.json; do
+    if [ -f "$TASKMASTER_DIR/$file" ]; then
+      pass
+      echo "  [PASS] $file 존재"
+    else
+      warn "taskmaster 확장: schema 누락 - $file"
+      echo "  [WARN] schema 누락: $file"
+    fi
+  done
+
+  echo "  [INFO] template 파일 점검"
+  for file in tasks.template.json state.template.json config.template.json; do
+    if [ -f "$TASKMASTER_DIR/$file" ]; then
+      pass
+      echo "  [PASS] $file 존재"
+    else
+      warn "taskmaster 확장: template 누락 - $file"
+      echo "  [WARN] template 누락: $file"
+    fi
+  done
+
+  echo "  [INFO] runtime 파일 점검"
+  for file in tasks.json state.json config.json; do
+    if [ -f "$TASKMASTER_DIR/$file" ]; then
+      pass
+      echo "  [PASS] $file 존재"
+    else
+      warn_optional_runtime "taskmaster 확장: runtime 파일 없음 - $file"
+      echo "  [WARN][optional-runtime] runtime 파일 없음: $file"
+    fi
+  done
+
+  if [ -f "$CODEX_DIR/commands/scripts/tm-init.sh" ]; then
+    pass
+    echo "  [PASS] tm-init 스크립트 존재"
+  else
+    warn "taskmaster 확장: tm-init 스크립트 없음"
+    echo "  [WARN] tm-init 스크립트 없음"
+  fi
+else
+  warn "taskmaster 확장 비활성 (.codex/project/taskmaster 없음)"
+  echo "  [WARN] taskmaster 확장 비활성"
+fi
+
+echo ""
 
 # ============================================================
 # 결과 요약

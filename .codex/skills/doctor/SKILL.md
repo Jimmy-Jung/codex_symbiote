@@ -48,6 +48,12 @@ source: origin
 - [ ] 빈 SKILL.md 감지
 - [ ] 중복 스킬 이름 감지
 
+### 8. 선택형 Task Master 확장
+- [ ] `.codex/project/taskmaster/` 존재 여부 확인
+- [ ] 존재 시 schema 파일 존재 여부 확인
+- [ ] 존재 시 `tasks.schema.json`, `state.schema.json`, `config.schema.json` 정합성 확인
+- [ ] 미존재 시 FAIL이 아닌 optional extension 비활성 상태로 처리
+
 ## 워크플로우
 
 ### Step 0: 자동 검증 스크립트 실행
@@ -64,6 +70,7 @@ bash .codex/skills/doctor/scripts/validate.sh
 - source 태그 정합성 (origin 번들 파일의 태그 존재 여부)
 - 교차 참조 정합성 (AGENTS.md 참조 vs 실제 파일)
 - 파일 크기 및 품질
+- 선택형 Task Master 확장 상태
 
 FAIL이 있으면 즉시 수정을 제안합니다. WARN은 수집해두고 Step 2에서 수동 검토와 함께 처리합니다.
 
@@ -76,6 +83,7 @@ FAIL이 있으면 즉시 수정을 제안합니다. WARN은 수집해두고 Step
 ### Step 2: 경로 참조 검증
 validate.sh의 경로 참조 결과를 검토합니다. 깨진 참조 중:
 - `/setup` 전이라 아직 생성되지 않은 파일 (context.md, manifest.json 등): 정상 (WARN으로 기록)
+- Task Master 확장이 비활성이라 아직 없는 파일 (`.codex/project/taskmaster/*`): 정상 (INFO/WARN으로 기록)
 - 오타나 잘못된 경로: 수정 제안
 
 ### Step 3: 결과 리포트
@@ -101,6 +109,10 @@ source 태그 요약:
 - origin 파일: N개 (태그 정상: N개, 태그 누락: N개)
 - custom 파일: N개
 - manifest activated 항목: N개 (source 필드 정상: N개, 누락: N개)
+
+Task Master 확장:
+- 상태: [비활성 / 활성]
+- schema 파일: [정상 / 누락 목록]
 ```
 
 ### Step 4: 자동 수정 제안

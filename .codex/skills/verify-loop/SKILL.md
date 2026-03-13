@@ -90,6 +90,25 @@ Complete (완료)
 - 파괴적 변경 필요 시 사용자 확인
 - 요구사항 모호 시 사용자 확인
 
+## Task Status 전환 가이드
+
+Task Master형 상태를 함께 사용할 때 verify 결과는 아래 상태 전환의 입력으로 사용합니다.
+
+| 조건 | 권장 상태 |
+|------|----------|
+| 구현 시작 | `pending -> in_progress` |
+| 기능 검증 완료, 추가 검토 필요 | `in_progress -> review` |
+| 선택한 완료 기준 충족 | `review -> done` 또는 `in_progress -> done` |
+| 외부 의존성/요구사항 막힘 | `in_progress -> blocked` |
+| 범위 재조정으로 보류 | `in_progress -> deferred` |
+
+### blocked 전환 권장 조건
+
+- 동일 외부 오류가 반복되어 로컬 수정으로 해결되지 않음
+- 사용자 승인 없이는 진행할 수 없는 파괴적 변경 필요
+- 요구사항 공백으로 구현 방향을 결정할 수 없음
+- 선행 dependency가 미완료라 현재 작업이 사실상 진행 불가
+
 ### 강제 종료 보고 형식
 
 ```
@@ -100,6 +119,21 @@ Complete (완료)
 - 최종 상태: [달성한 것 / 미달성한 것]
 - 발견된 이슈: [목록]
 - 권장 조치: [사용자에게 제안]
+```
+
+### tm-sync 요약 형식
+
+전역 task graph에 반영할 때는 아래 정보를 포함해 요약합니다.
+
+```text
+[Verify Summary]
+
+- taskId: [id 또는 none]
+- verificationLevel: [1-4]
+- recommendedStatus: [in_progress|review|done|blocked|deferred]
+- passedChecks: [목록]
+- failedChecks: [목록]
+- nextAction: [fix|retry|escalate|complete]
 ```
 
 ## 실패 패턴 분류 및 대응

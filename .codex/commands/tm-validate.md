@@ -1,0 +1,55 @@
+# /tm-validate
+
+Task Master형 전역 상태의 구조와 정합성을 검사합니다.
+
+## 목적
+
+- schema 기준 구조 오류 탐지
+- dependency cycle, missing reference, orphan 상태 탐지
+- task graph와 세션 상태 연결 이상 확인
+
+## 검사 대상
+
+- `.codex/project/taskmaster/tasks.json`
+- `.codex/project/taskmaster/state.json`
+- `.codex/project/taskmaster/config.json`
+- 선택형 `.codex/project/state/*/ralph-state.md`
+- 선택형 `.codex/project/state/*/notepad.md`
+
+## 주요 체크
+
+1. 필수 파일 존재 여부
+2. schema 기준 필수 키 존재 여부
+3. dependency가 존재하는 task를 가리키는지
+4. `currentTaskId`가 실제 task와 일치하는지
+5. task metadata의 `taskFolder`가 실제 세션 폴더와 연결되는지
+
+## 실행 스크립트
+
+```bash
+bash .codex/commands/scripts/tm-validate.sh
+```
+
+프로젝트 루트를 명시할 수도 있습니다.
+
+```bash
+bash .codex/commands/scripts/tm-validate.sh /path/to/project
+```
+
+## 출력 예시
+
+```text
+[tm-validate]
+
+- schema: pass
+- dependencies: pass
+- runtimeLinks: warn
+- warnings:
+  - currentTaskId is null
+```
+
+## 원칙
+
+- task graph가 비활성 상태면 FAIL이 아니라 "not initialized"로 보고
+- setup 전 상태와 optional extension 비활성 상태를 구분해 출력한다
+- JSON 문법, 필수 키, dependency 참조, `currentTaskId` 정합성을 최소 검사한다
