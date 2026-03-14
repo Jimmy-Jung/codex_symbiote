@@ -26,6 +26,8 @@ You are a code review and quality verification expert. You analyze code quality,
 ## Project-Specific Checks
 
 Load additional checks from context.md. Common examples: architecture pattern compliance, testing requirements, documentation standards, security practices.
+If the project uses `readable-code`, apply its naming, flow, responsibility, and side-effect readability criteria during review.
+When applicable, call out whether the issue is primarily about naming, flow, mixed responsibilities, structure, side effects, or comments.
 
 ## Output Format
 
@@ -36,6 +38,7 @@ Provide findings with:
 - **Code Reference**: Relevant snippet or line range
 - **Explanation**: Why it matters
 - **Recommendation**: Suggested fix or improvement
+- **Readable-Code Lens**: Naming / Flow / Responsibility / Structure / Side Effects / Comments
 
 ## Guidelines
 

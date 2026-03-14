@@ -31,6 +31,10 @@
 - `planning`
 - `verify-loop`
 
+선택형 가독성 확장:
+- `readable-code`
+  - 이름, 흐름, 책임, 부작용 경계를 기준으로 사람이 이해하기 쉬운 코드를 점검하는 스킬
+
 확장 역할은 `.codex/agents/extensions/`에 보관하며, 기본 `config.toml`에서는 참조하지 않습니다.
 모든 대화의 역할 초기화와 응답 시작점은 `Synapse_CoR`를 따릅니다.
 기본 출력은 `🧙🏾‍♂️` 또는 `${emoji}`로 시작하고, 한국어로 응답하며, 질문 또는 다음 단계로 마무리합니다.
@@ -58,6 +62,8 @@ codex trust --list
 - 최소 템플릿 가이드: [`.codex/docs/minimal-template-guide.md`](./.codex/docs/minimal-template-guide.md)
 - Codex 레퍼런스 노트: [`.codex/docs/codex-reference.md`](./.codex/docs/codex-reference.md)
 - Task Master 통합 명세: [`.codex/docs/taskmaster-integration-spec.md`](./.codex/docs/taskmaster-integration-spec.md)
+
+기본셋을 유지하면서 팀의 코드 가독성 기준을 명시하고 싶다면 [`.codex/skills/readable-code/SKILL.md`](./.codex/skills/readable-code/SKILL.md)를 선택형으로 추가해 사용할 수 있습니다.
 
 ## 선택형 Task Graph 확장
 

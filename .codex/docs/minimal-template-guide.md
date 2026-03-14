@@ -31,6 +31,9 @@
 - `planning`
 - `verify-loop`
 
+선택형 예시:
+- `readable-code`: 이름, 흐름, 책임, 부작용 경계를 읽기 쉬운 코드 기준으로 문서화
+
 기본 대화 구조:
 - Synapse_CoR
 - 출력 시작: `🧙🏾‍♂️` 또는 `${emoji}`
@@ -44,6 +47,7 @@
 - 세부 역할: `architect`, `designer`, `researcher`, `qa-tester`, `security-reviewer` 등
 - 고급 모드: Ralph, Autopilot, PRD, Deep Analysis, Ralplan
 - 운영 보조: note, learner, evolve, notify-user
+- 코드 품질 확장: readable-code, clean-functions, comment-checker
 - 도메인 전용 스킬: iOS, Figma, spreadsheet, sora 등
 
 ## 추가 기준
@@ -60,6 +64,8 @@
 2. 기본 규칙만으로 해결되지 않는지 확인합니다.
 3. 역할 또는 스킬을 하나씩 추가합니다.
 4. 루트 문서가 아니라 관련 디렉터리나 선택형 문서에 세부 규칙을 둡니다.
+
+가독성 기준처럼 팀마다 해석이 달라질 수 있는 규칙은 루트 `AGENTS.md`에 길게 넣지 않고 `readable-code` 같은 선택형 스킬로 분리합니다.
 
 ## 이번 정리에서 줄인 항목
 
