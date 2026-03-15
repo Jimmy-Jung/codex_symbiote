@@ -15,7 +15,7 @@
 
 ## 동작
 
-1. 대상 task를 찾는다
+1. `state/*/task.json`에서 대상 task를 찾는다
 2. `details`, `testStrategy`, `priority`, `dependencies`를 읽는다
 3. 논리적 실행 순서에 맞춰 subtasks를 생성한다
 4. 필요 시 부모 task의 `userStories`와 `risks`를 metadata에 연결한다
@@ -32,6 +32,8 @@ bash .codex/commands/scripts/tm-expand.sh . 12 4
 [tm-expand]
 
 - taskId: 12
+- taskFolder: 2026-03-13T1200_task-graph-init
+- target: .codex/project/state/2026-03-13T1200_task-graph-init/task.json
 - createdSubtasks: 4
 - recommendedNext: /tm-validate
 ```

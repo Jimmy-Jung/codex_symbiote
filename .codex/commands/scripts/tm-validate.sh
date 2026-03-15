@@ -3,8 +3,8 @@ set -euo pipefail
 
 ROOT_DIR="${1:-.}"
 TASKMASTER_DIR="$ROOT_DIR/.codex/project/taskmaster"
-
-TASKS_JSON="$TASKMASTER_DIR/tasks.json"
+STATE_ROOT="$ROOT_DIR/.codex/project/state"
+LEGACY_TASKS_JSON="$TASKMASTER_DIR/tasks.json"
 STATE_JSON="$TASKMASTER_DIR/state.json"
 CONFIG_JSON="$TASKMASTER_DIR/config.json"
 
@@ -35,7 +35,7 @@ if [ ! -d "$TASKMASTER_DIR" ]; then
   exit 0
 fi
 
-for file in "$TASKS_JSON" "$STATE_JSON" "$CONFIG_JSON"; do
+for file in "$STATE_JSON" "$CONFIG_JSON"; do
   if [ -f "$file" ]; then
     pass "exists: $(basename "$file")"
   else
@@ -43,7 +43,11 @@ for file in "$TASKS_JSON" "$STATE_JSON" "$CONFIG_JSON"; do
   fi
 done
 
-for file in "$TASKS_JSON" "$STATE_JSON" "$CONFIG_JSON"; do
+if [ -f "$LEGACY_TASKS_JSON" ]; then
+  warn "legacy runtime detected: $(basename "$LEGACY_TASKS_JSON")"
+fi
+
+for file in "$STATE_JSON" "$CONFIG_JSON"; do
   if [ -f "$file" ]; then
     if jq empty "$file" >/dev/null 2>&1; then
       pass "valid json: $(basename "$file")"
@@ -53,39 +57,31 @@ for file in "$TASKS_JSON" "$STATE_JSON" "$CONFIG_JSON"; do
   fi
 done
 
-if [ -f "$TASKS_JSON" ]; then
-  jq -e '.version and .tasks' "$TASKS_JSON" >/dev/null 2>&1 \
-    && pass "tasks.json required keys present" \
-    || fail "tasks.json missing required keys"
+if [ -d "$STATE_ROOT" ]; then
+  pass "exists: $(basename "$STATE_ROOT")"
+else
+  warn "state directory missing: $STATE_ROOT"
+fi
 
-  if jq -e '.tasks | type == "array"' "$TASKS_JSON" >/dev/null 2>&1; then
-    pass "tasks.json tasks is array"
-  else
-    fail "tasks.json tasks is not array"
-  fi
+TASK_FILES=()
+TASK_FILE_COUNT=0
+if [ -d "$STATE_ROOT" ]; then
+  while IFS= read -r file; do
+    TASK_FILES+=("$file")
+    TASK_FILE_COUNT=$((TASK_FILE_COUNT + 1))
+  done < <(find "$STATE_ROOT" -maxdepth 2 -type f -name task.json | sort)
+fi
 
-  if jq -e '.tasks[]? | .id and .status and .priority and .metadata' "$TASKS_JSON" >/dev/null 2>&1 || jq -e '.tasks | length == 0' "$TASKS_JSON" >/dev/null 2>&1; then
-    pass "tasks.json task shape looks valid"
-  else
-    fail "tasks.json contains task entries missing required fields"
-  fi
+if [ "$TASK_FILE_COUNT" -eq 0 ]; then
+  warn "no task.json found under .codex/project/state/*"
+else
+  pass "discovered task.json files: $TASK_FILE_COUNT"
 fi
 
 if [ -f "$STATE_JSON" ]; then
   jq -e '.currentTag and (.migrationNoticeShown | type == "boolean")' "$STATE_JSON" >/dev/null 2>&1 \
     && pass "state.json required keys present" \
     || fail "state.json missing required keys"
-
-  CURRENT_TASK_ID=$(jq -r '.currentTaskId // empty' "$STATE_JSON" 2>/dev/null || true)
-  if [ -n "$CURRENT_TASK_ID" ] && [ -f "$TASKS_JSON" ]; then
-    if jq -e --arg id "$CURRENT_TASK_ID" '.tasks[]? | select(.id == $id)' "$TASKS_JSON" >/dev/null 2>&1; then
-      pass "currentTaskId points to existing task"
-    else
-      fail "currentTaskId does not match any task"
-    fi
-  else
-    warn "currentTaskId is null or tasks.json missing"
-  fi
 fi
 
 if [ -f "$CONFIG_JSON" ]; then
@@ -94,13 +90,29 @@ if [ -f "$CONFIG_JSON" ]; then
     || fail "config.json missing required sections"
 fi
 
-if [ -f "$TASKS_JSON" ]; then
-  BROKEN_DEPS=$(jq -r '
-    [ .tasks[] as $t
-      | $t.dependencies[]
-      | select([ $t ] | length >= 0)
-    ] | length
-  ' "$TASKS_JSON" 2>/dev/null || echo "0")
+for task_file in "${TASK_FILES[@]-}"; do
+  if [ -z "${task_file:-}" ]; then
+    continue
+  fi
+  folder_name="$(basename "$(dirname "$task_file")")"
+
+  if jq -e '
+    .version and .tasks and (.tasks | type == "array")
+  ' "$task_file" >/dev/null 2>&1; then
+    pass "task.json required keys present: $folder_name"
+  else
+    fail "task.json missing required keys: $folder_name"
+    continue
+  fi
+
+  if jq -e '
+    (.tasks | length == 0)
+    or ([ .tasks[]? | .id and .status and .priority and .metadata ] | all)
+  ' "$task_file" >/dev/null 2>&1; then
+    pass "task shape valid: $folder_name"
+  else
+    fail "task entries missing required fields: $folder_name"
+  fi
 
   if jq -e '
     [ .tasks[].id ] as $ids
@@ -108,10 +120,46 @@ if [ -f "$TASKS_JSON" ]; then
         | {id, broken: [ .dependencies[] | select(($ids | index(.)) == null) ] }
         | select(.broken | length > 0)
       ] | length == 0
-  ' "$TASKS_JSON" >/dev/null 2>&1; then
-    pass "dependencies reference existing tasks"
+  ' "$task_file" >/dev/null 2>&1; then
+    pass "dependencies valid: $folder_name"
   else
-    fail "one or more dependencies reference missing task ids"
+    fail "dependencies reference missing ids: $folder_name"
+  fi
+
+  if jq -e --arg folder "$folder_name" '
+    [ .tasks[]?
+      | select((.metadata.taskFolder // $folder) != $folder)
+    ] | length == 0
+  ' "$task_file" >/dev/null 2>&1; then
+    pass "metadata.taskFolder synced: $folder_name"
+  else
+    fail "metadata.taskFolder mismatch: $folder_name"
+  fi
+done
+
+if [ -f "$STATE_JSON" ]; then
+  CURRENT_TASK_ID="$(jq -r '.currentTaskId // empty' "$STATE_JSON" 2>/dev/null || true)"
+  if [ -z "$CURRENT_TASK_ID" ]; then
+    warn "currentTaskId is null"
+  elif [ "$TASK_FILE_COUNT" -eq 0 ]; then
+    warn "currentTaskId present but no task.json available to validate"
+  else
+    MATCHED="false"
+    for task_file in "${TASK_FILES[@]-}"; do
+      if [ -z "${task_file:-}" ]; then
+        continue
+      fi
+      if jq -e --arg id "$CURRENT_TASK_ID" '.tasks[]? | select(.id == $id)' "$task_file" >/dev/null 2>&1; then
+        MATCHED="true"
+        break
+      fi
+    done
+
+    if [ "$MATCHED" = "true" ]; then
+      pass "currentTaskId points to existing task"
+    else
+      fail "currentTaskId does not match any task in state/*/task.json"
+    fi
   fi
 fi
 

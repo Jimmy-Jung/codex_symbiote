@@ -96,7 +96,7 @@ Ralph Loop / Autopilot의 각 iteration에서:
 
 ## Task Graph 보조 입력 규칙
 
-`notepad.md`는 전역 `tasks.json`의 진실 원천이 아니다.
+`notepad.md`는 `state/{task-folder}/task.json`의 진실 원천이 아니다.
 다만 아래 항목은 `tm-sync`나 수동 상태 갱신의 보조 입력으로 사용할 수 있다.
 
 - 현재 막힌 원인

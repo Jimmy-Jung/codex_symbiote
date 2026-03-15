@@ -5,25 +5,43 @@ ROOT_DIR="${1:-.}"
 TASK_ID="${2:-}"
 COUNT="${3:-3}"
 
-TASKMASTER_DIR="$ROOT_DIR/.codex/project/taskmaster"
-TASKS_JSON="$TASKMASTER_DIR/tasks.json"
+STATE_ROOT="$ROOT_DIR/.codex/project/state"
 
 if [ -z "$TASK_ID" ]; then
   echo "[tm-expand][ERROR] taskId is required" >&2
   exit 1
 fi
 
-if [ ! -f "$TASKS_JSON" ]; then
-  echo "[tm-expand][ERROR] tasks.json not found. Run tm-init first." >&2
+if [ ! -d "$STATE_ROOT" ]; then
+  echo "[tm-expand][ERROR] state directory not found: $STATE_ROOT" >&2
   exit 1
 fi
 
-if ! jq -e --arg id "$TASK_ID" '.tasks[] | select(.id == $id)' "$TASKS_JSON" >/dev/null 2>&1; then
-  echo "[tm-expand][ERROR] task not found: $TASK_ID" >&2
+MATCHED_FILES=()
+while IFS= read -r task_file; do
+  if jq -e --arg id "$TASK_ID" '.tasks[]? | select(.id == $id)' "$task_file" >/dev/null 2>&1; then
+    MATCHED_FILES+=("$task_file")
+  fi
+done < <(find "$STATE_ROOT" -maxdepth 2 -type f -name task.json | sort)
+
+MATCH_COUNT=${#MATCHED_FILES[@]}
+if [ "$MATCH_COUNT" -eq 0 ]; then
+  echo "[tm-expand][ERROR] task not found in state/*/task.json: $TASK_ID" >&2
   exit 1
 fi
 
-if jq -e --arg id "$TASK_ID" '.tasks[] | select(.id == $id) | (.subtasks | length > 0)' "$TASKS_JSON" >/dev/null 2>&1; then
+if [ "$MATCH_COUNT" -gt 1 ]; then
+  echo "[tm-expand][ERROR] task id is ambiguous across multiple task.json files: $TASK_ID" >&2
+  for f in "${MATCHED_FILES[@]}"; do
+    echo "  - ${f#$ROOT_DIR/}" >&2
+  done
+  exit 1
+fi
+
+TASK_JSON="${MATCHED_FILES[0]}"
+TASK_FOLDER="$(basename "$(dirname "$TASK_JSON")")"
+
+if jq -e --arg id "$TASK_ID" '.tasks[] | select(.id == $id) | (.subtasks | length > 0)' "$TASK_JSON" >/dev/null 2>&1; then
   echo "[tm-expand][ERROR] task already has subtasks: $TASK_ID" >&2
   exit 1
 fi
@@ -50,11 +68,13 @@ jq --arg id "$TASK_ID" --argjson count "$COUNT" '
       .
     end
   )
-' "$TASKS_JSON" > "$TMP_JSON"
-mv "$TMP_JSON" "$TASKS_JSON"
+' "$TASK_JSON" > "$TMP_JSON"
+mv "$TMP_JSON" "$TASK_JSON"
 
 echo "[tm-expand]"
 echo ""
 echo "- taskId: $TASK_ID"
+echo "- taskFolder: $TASK_FOLDER"
+echo "- target: ${TASK_JSON#$ROOT_DIR/}"
 echo "- createdSubtasks: $COUNT"
 echo "- recommendedNext: /tm-validate"

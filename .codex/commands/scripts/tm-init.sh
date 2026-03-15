@@ -26,7 +26,6 @@ copy_template() {
   echo "[tm-init][CREATE] $dst"
 }
 
-copy_template "tasks.template.json" "tasks.json"
 copy_template "state.template.json" "state.json"
 copy_template "config.template.json" "config.json"
 

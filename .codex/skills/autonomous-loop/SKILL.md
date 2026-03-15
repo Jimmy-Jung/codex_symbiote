@@ -39,7 +39,6 @@ Read tool로 다음 스킬을 읽어 적용하세요:
 - `.codex/skills/verify-loop/SKILL.md` — 자기 수정 루프, 4-Level 완료 기준
 - `.codex/skills/planning/SKILL.md` — 개발 계획 수립
 - `.codex/skills/code-accuracy/SKILL.md` — 코드 정확성 검증
-- `.codex/skills/notify-user/SKILL.md` — 에스컬레이션 시 Slack-First 모드로 사용자 응답 수신
 - `.codex/project/context.md` — 프로젝트별 패턴 및 컨벤션
 
 ## 진입 조건
@@ -127,11 +126,11 @@ Task Master형 상태를 함께 사용할 때:
 - task graph는 "무엇을 실행할지"를 결정한다
 - autonomous-loop는 "선택된 작업을 어떻게 완료할지"를 담당한다
 - 루프 시작 시 `currentTaskId` 또는 명시된 `taskId`를 읽는다
-- 루프 종료 시 verify 결과를 `tm-sync` 또는 동등한 절차로 전역 task status에 반영한다
+- 루프 종료 시 verify 결과를 `tm-sync` 또는 동등한 절차로 task-folder의 task status에 반영한다
 
 원칙:
 
-- autonomous-loop가 전역 `tasks.json`을 직접 소유하지 않는다
+- autonomous-loop가 task graph 파일(`state/{task-folder}/task.json`)을 직접 소유하지 않는다
 - task 선택 책임과 실행 책임을 분리한다
 
 ## 에스컬레이션 규칙
@@ -143,7 +142,7 @@ Task Master형 상태를 함께 사용할 때:
 - 요구사항 모호/추가 정보 필요
 - 보안 관련 결정 필요
 
-에스컬레이션 시 notify-user 스킬을 호출합니다.
+에스컬레이션이 필요하면 현재 세션 정책에 맞는 사용자 확인 절차를 사용합니다.
 자율 루프 중이므로 Slack-First 모드가 자동 활성화됩니다:
 - AskQuestion 없이 Slack DM으로 직접 질문
 - 30초 간격 폴링으로 응답 대기 (최대 10분)

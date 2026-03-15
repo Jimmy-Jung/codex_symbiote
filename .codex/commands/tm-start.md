@@ -15,11 +15,11 @@
 
 ## 동작
 
-1. `tasks.json`에서 대상 task 존재 여부 확인
+1. `state/*/task.json`에서 대상 task 존재 여부 확인
 2. `state.json.currentTaskId`를 설정
 3. task title 기반으로 `task-folder`를 생성
 4. 필요 시 `ralph-state.md`, `notepad.md`, `prd.json` 연결
-5. task metadata의 `taskFolder`를 기록
+5. 대상 `task.json`의 task metadata에 `taskFolder`를 기록
 
 ## 출력 예시
 
@@ -29,6 +29,7 @@
 - taskId: 12
 - mode: ralph
 - currentTaskId: 12
+- sourceTaskJson: .codex/project/state/2026-03-13T1200_task-graph-init/task.json
 - taskFolder: 2026-03-13T1200_task-graph-init
 - nextAction: autonomous-loop
 ```

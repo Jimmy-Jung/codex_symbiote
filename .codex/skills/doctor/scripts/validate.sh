@@ -225,7 +225,7 @@ check_references() {
       if [ "$ref" = ".codex/project/manifest.json" ] || [ "$ref" = ".codex/project/context.md" ]; then
         warn_setup "$label: 참조 '$ref'가 존재하지 않습니다"
         echo "  [WARN][setup] 깨진 참조: $label → $ref"
-      elif [ "$ref" = ".codex/project/taskmaster/state.json" ] || [ "$ref" = ".codex/project/taskmaster/tasks.json" ] || [ "$ref" = ".codex/project/taskmaster/config.json" ] || [ "$ref" = ".codex/project/logs/" ] || [ "$ref" = ".codex/project/codebase-index.md" ] || [ "$ref" = ".codex/project/history/v1.0-initial-setup.md" ] || [ "$ref" = ".codex/project/history/vN.M-evolution-YYYYMMDD.md" ] || [ "$ref" = ".codex/project/history/modified-origins/" ] || [ "$ref" = ".codex/skills/notify-user/.env" ] || [ "$ref" = ".codex/skills/.system/skill-creator/SKILL.md" ]; then
+      elif [ "$ref" = ".codex/project/taskmaster/state.json" ] || [ "$ref" = ".codex/project/taskmaster/config.json" ] || [ "$ref" = ".codex/project/logs/" ] || [ "$ref" = ".codex/project/codebase-index.md" ] || [ "$ref" = ".codex/project/history/v1.0-initial-setup.md" ] || [ "$ref" = ".codex/project/history/vN.M-evolution-YYYYMMDD.md" ] || [ "$ref" = ".codex/project/history/modified-origins/" ] || [ "$ref" = ".codex/skills/notify-user/.env" ] || [ "$ref" = ".codex/skills/.system/skill-creator/SKILL.md" ]; then
         warn_optional_runtime "$label: 참조 '$ref'가 존재하지 않습니다"
         echo "  [WARN][optional-runtime] 깨진 참조: $label → $ref"
       else
@@ -269,7 +269,7 @@ if [ -f "$AGENTS_FILE" ]; then
   done
 
   # AGENTS.md에서 스킬 이름 참조 확인 (일반적인 스킬 이름 패턴)
-  KNOWN_SKILL_REFS="code-accuracy planning clean-functions code-review design-principles tdd documentation mermaid refactoring reverse-engineering git-commit branch-convention merge-request autonomous-loop deep-search deep-index research ecomode prd ralplan build-fix cancel help verify-loop ast-refactor setup evolve doctor learner note notify-user comment-checker lsp security-review solid"
+  KNOWN_SKILL_REFS="code-accuracy planning clean-functions code-review design-principles tdd documentation mermaid refactoring reverse-engineering git-commit branch-convention merge-request autonomous-loop deep-search deep-index research ecomode prd ralplan build-fix cancel help verify-loop ast-refactor setup evolve doctor learner note comment-checker lsp security-review solid"
   MISSING_SKILLS=0
   for skill in $KNOWN_SKILL_REFS; do
     if grep -qi "$skill" "$AGENTS_FILE" 2>/dev/null; then
@@ -388,7 +388,7 @@ if [ -d "$TASKMASTER_DIR" ]; then
   done
 
   echo "  [INFO] runtime 파일 점검"
-  for file in tasks.json state.json config.json; do
+  for file in state.json config.json; do
     if [ -f "$TASKMASTER_DIR/$file" ]; then
       pass
       echo "  [PASS] $file 존재"
@@ -397,6 +397,11 @@ if [ -d "$TASKMASTER_DIR" ]; then
       echo "  [WARN][optional-runtime] runtime 파일 없음: $file"
     fi
   done
+
+  if [ -f "$TASKMASTER_DIR/tasks.json" ]; then
+    warn_optional_runtime "taskmaster 확장: legacy runtime 파일 존재 - tasks.json"
+    echo "  [WARN][optional-runtime] legacy runtime 파일 존재: tasks.json"
+  fi
 
   if [ -f "$CODEX_DIR/commands/scripts/tm-init.sh" ]; then
     pass

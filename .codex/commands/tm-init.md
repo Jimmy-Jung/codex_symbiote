@@ -5,7 +5,7 @@ Task Master형 전역 task graph 상태를 초기화합니다.
 ## 목적
 
 - `.codex/project/taskmaster/` 초기 상태 생성
-- `tasks.json`, `state.json`, `config.json`을 기본 구조로 준비
+- `state.json`, `config.json`을 기본 구조로 준비
 - 기존 Symbiote 세션 상태와 분리된 전역 계획 계층 시작
 
 ## 입력
@@ -20,7 +20,7 @@ Task Master형 전역 task graph 상태를 초기화합니다.
 1. `.codex/project/taskmaster/` 디렉터리 존재 여부 확인
 2. 없으면 디렉터리 생성
 3. schema 파일 존재 여부 확인
-4. `tasks.template.json`, `state.template.json`, `config.template.json`을 기준으로 `tasks.json`, `state.json`, `config.json`을 생성
+4. `state.template.json`, `config.template.json`을 기준으로 `state.json`, `config.json`을 생성
 5. 이미 있으면 덮어쓰기 대신 현재 상태를 보여주고 재초기화 여부를 확인
 
 ## 실행 스크립트
@@ -49,7 +49,6 @@ bash .codex/commands/scripts/tm-init.sh /path/to/project
 - task graph: initialized
 - path: .codex/project/taskmaster/
 - created:
-  - tasks.json
   - state.json
   - config.json
 - currentTag: master

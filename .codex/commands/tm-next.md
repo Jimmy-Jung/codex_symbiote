@@ -34,6 +34,6 @@
 
 ## 원칙
 
-- `tasks.json`이 진실 원천이다
+- 탐색 대상의 `state/*/task.json`이 진실 원천이다
 - `notepad.md`는 선택 사유 보조 입력으로만 사용한다
 - 선택 결과는 `state.json.lastSelectedTaskId`에 반영할 수 있다

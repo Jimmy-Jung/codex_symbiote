@@ -1,6 +1,6 @@
 # /tm-board
 
-전역 task graph를 상태별로 요약해 보여줍니다.
+`state/*/task.json` 기준 task graph를 상태별로 요약해 보여줍니다.
 
 ## 목적
 
@@ -18,6 +18,7 @@
 - 전체 task 수
 - 상태별 개수
 - 현재 `currentTaskId`
+- 현재 `currentTaskId`가 속한 `task-folder`
 - `blocked` task 목록
 - 실행 가능한 `pending` 후보
 
@@ -33,6 +34,7 @@
 - done: 2
 - blocked: 0
 - currentTaskId: 12
+- currentTaskFolder: 2026-03-13T1200_task-graph-init
 - runnableNext:
   - 13
   - 14

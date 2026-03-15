@@ -1,6 +1,6 @@
 # /tm-validate
 
-Task Master형 전역 상태의 구조와 정합성을 검사합니다.
+Task Master형 상태의 구조와 정합성을 검사합니다.
 
 ## 목적
 
@@ -10,9 +10,9 @@ Task Master형 전역 상태의 구조와 정합성을 검사합니다.
 
 ## 검사 대상
 
-- `.codex/project/taskmaster/tasks.json`
 - `.codex/project/taskmaster/state.json`
 - `.codex/project/taskmaster/config.json`
+- `.codex/project/state/*/task.json`
 - 선택형 `.codex/project/state/*/ralph-state.md`
 - 선택형 `.codex/project/state/*/notepad.md`
 
@@ -20,9 +20,10 @@ Task Master형 전역 상태의 구조와 정합성을 검사합니다.
 
 1. 필수 파일 존재 여부
 2. schema 기준 필수 키 존재 여부
-3. dependency가 존재하는 task를 가리키는지
-4. `currentTaskId`가 실제 task와 일치하는지
-5. task metadata의 `taskFolder`가 실제 세션 폴더와 연결되는지
+3. 각 `task.json`의 필수 키/배열 구조가 유효한지
+4. dependency가 같은 `task.json` 내 실제 task를 가리키는지
+5. `currentTaskId`가 `state/*/task.json` 중 하나의 task와 일치하는지
+6. task metadata의 `taskFolder`가 실제 세션 폴더와 연결되는지
 
 ## 실행 스크립트
 
@@ -41,11 +42,10 @@ bash .codex/commands/scripts/tm-validate.sh /path/to/project
 ```text
 [tm-validate]
 
-- schema: pass
-- dependencies: pass
-- runtimeLinks: warn
-- warnings:
-  - currentTaskId is null
+  [PASS] exists: state.json
+  [PASS] exists: config.json
+  [PASS] discovered task.json files: 1
+  [WARN] currentTaskId is null
 ```
 
 ## 원칙
@@ -53,3 +53,4 @@ bash .codex/commands/scripts/tm-validate.sh /path/to/project
 - task graph가 비활성 상태면 FAIL이 아니라 "not initialized"로 보고
 - setup 전 상태와 optional extension 비활성 상태를 구분해 출력한다
 - JSON 문법, 필수 키, dependency 참조, `currentTaskId` 정합성을 최소 검사한다
+- 전역 `tasks.json`이 있으면 legacy runtime으로 WARN을 출력한다

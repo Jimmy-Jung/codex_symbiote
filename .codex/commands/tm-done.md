@@ -1,6 +1,6 @@
 # /tm-done
 
-작업 완료를 전역 task graph에 반영합니다.
+작업 완료를 대응 `task.json`에 반영합니다.
 
 ## 목적
 
@@ -17,7 +17,7 @@
 
 1. 대상 task 존재 여부 확인
 2. verify 결과나 완료 근거 요약 수집
-3. task status를 `done`으로 변경
+3. 대응 `state/{task-folder}/task.json`의 task status를 `done`으로 변경
 4. `state.json.currentTaskId`가 동일하면 null로 변경
 5. 필요 시 `notepad.md`와 `ralph-state.md` 종료 상태를 함께 기록
 
