@@ -26,6 +26,7 @@
 - 역할은 단일 책임으로 설계합니다.
 - 기본 템플릿은 `explorer`, `worker`, `reviewer`, `monitor` 중심으로 유지합니다.
 - 분석가, 설계자, QA, 보안 등 세부 역할은 확장용으로 간주합니다.
+- 공식 자료 기반 전문가 역할도 `.codex/agents/extensions/`에만 추가하고 기본 `config.toml`에는 등록하지 않습니다.
 - 역할 지시는 중복을 줄이고 실제 도구 사용 방식에 맞게 유지합니다.
 
 ## 4) 문서 동기화
@@ -35,6 +36,7 @@
 - 루트 `AGENTS.md`
 - `.codex/config.toml`
 - `.codex/docs/*`의 운영 문서
+- 공식 자료 기반 역할 출처 문서
 - Synapse_CoR 기본 출력 규칙
 
 Synapse_CoR 출력 규칙 동기화 기준:
