@@ -78,15 +78,33 @@ codex trust --list
 - command convention: [`.codex/commands/`](./.codex/commands)
 - 통합 기준: [`.codex/docs/taskmaster-integration-spec.md`](./.codex/docs/taskmaster-integration-spec.md)
 
+Codex 채팅 자동완성에 표시하려면 `.codex/commands/*.md`를 그대로 두는 것만으로는 부족합니다.
+공식 `custom prompts` 경로인 `~/.codex/prompts/`로 동기화해야 `/prompts:...` 형태로 표시됩니다.
+
+```bash
+bash .codex/commands/scripts/sync-codex-prompts.sh
+```
+
+기본 동기화 대상:
+- `~/.codex/prompts/tm-init.md`
+- `~/.codex/prompts/tm-parse-prd.md`
+- `~/.codex/prompts/tm-expand.md`
+- `~/.codex/prompts/tm-next.md`
+- `~/.codex/prompts/tm-start.md`
+- `~/.codex/prompts/tm-sync.md`
+- `~/.codex/prompts/tm-done.md`
+- `~/.codex/prompts/tm-board.md`
+- `~/.codex/prompts/tm-validate.md`
+
 권장 흐름:
 
-1. `/tm-init`
-2. `/tm-parse-prd`
-3. `/tm-expand`
-4. `/tm-next`
-5. `/tm-start`
-6. `/tm-sync`
-7. `/tm-done`
+1. `/prompts:tm-init`
+2. `/prompts:tm-parse-prd`
+3. `/prompts:tm-expand`
+4. `/prompts:tm-next`
+5. `/prompts:tm-start`
+6. `/prompts:tm-sync`
+7. `/prompts:tm-done`
 
 초기 runtime 상태 파일 생성은 아래 스크립트로 시작할 수 있습니다.
 
